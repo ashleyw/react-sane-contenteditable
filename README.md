@@ -35,6 +35,7 @@ class App extends Component {
           content={this.state.title}
           editable={true}
           maxLength={140}
+          multiLine={false}
           onChange={ this.handleChange }
         />
       </div>
