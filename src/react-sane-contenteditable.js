@@ -41,18 +41,22 @@ export default class ContentEditable extends Component {
     const { maxLength, multiLine } = this.props;
 
     const method = this.getInnerMethod();
-    let value = this.refs.element[method].replace(/&nbsp;/g, ' '); // replace encoded spaces
+    
+    // replace encoded spaces
+    let value = this.refs.element[method].replace(/&nbsp;/g, ' ');
 
     if (multiLine) {
-      value = value.replace(/[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g, ' '); // replace any 2+ character whitespace (other than new lines) with a single space
+      // replace any any number of whitespace characters (other than new lines!) with a single space
+      value = value.replace(/[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g, ' ');
     } else {
+      // replace any number of whitespace characters with a single space
       value = value.replace(/\s+/g, ' ');
     }
 
     return value.split('\n')
       .map(line => line.trim())
       .join('\n')
-      .replace(/\n{3,}/g, '\n\n') // replace 3+ linebreaks with two
+      .replace(/\n{3,}/g, '\n\n')
       .trim()
       .substr(0, maxLength);
   }
@@ -76,13 +80,13 @@ export default class ContentEditable extends Component {
     const method = this.getInnerMethod();
     const value = this.refs.element[method];
 
-    // return key
+    // keyCode 13 === return key
     if (!multiLine && ev.keyCode === 13) {
       ev.preventDefault();
       ev.currentTarget.blur();
     }
 
-    // Ensure we don't exceed `maxLength` (keycode 8 === backspace)
+    // Ensure we don't exceed `maxLength` (keyCode 8 === backspace)
     if (maxLength && !ev.metaKey && ev.which !== 8 && value.replace(/\s\s/g, ' ').length >= maxLength) {
       ev.preventDefault();
     }
