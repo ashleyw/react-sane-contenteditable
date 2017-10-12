@@ -1,6 +1,8 @@
 # react-sane-contenteditable
 React component with sane defaults to make any element contentEditable
 
+Heavily inspired by [react-simple-contenteditable](https://github.com/raphasilvac/react-simple-contenteditable).
+
 ## Why?
 ContentEditable has some known issues, the purpose of this component is to avoid some of its problems:
 
