@@ -29,8 +29,8 @@ class App extends Component {
     return (
       <div className="App">
         <ContentEditable
-          className="my-class"
           tagName="h1"
+          className="my-class"
           mode="plaintext"
           content={this.state.title}
           editable={true}
