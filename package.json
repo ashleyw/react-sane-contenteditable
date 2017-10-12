@@ -1,0 +1,25 @@
+{
+  "name": "react-sane-contenteditable",
+  "version": "1.0.1",
+  "description": "React component with sane defaults to make any element contentEditable",
+  "main": "lib/index.js",
+  "repository": "https://github.com/ashleyw/react-sane-contenteditable.git",
+  "author": "Ashley Williams <hi@ashleyw.co.uk>",
+  "contributors": [
+    "Raphael Silva Cavalcanti"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "prop-types": "^15.6.0",
+    "react": "^15.4.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-2": "^6.22.0"
+  },
+  "scripts": {
+    "build": "babel src/react-sane-contenteditable.js --out-file lib/index.js"
+  }
+}
