@@ -1,13 +1,14 @@
 # react-sane-contenteditable
 React component with sane defaults to make any element contentEditable
 
-Heavily inspired by [react-simple-contenteditable](https://github.com/raphasilvac/react-simple-contenteditable).
+Based on [react-simple-contenteditable](https://github.com/raphasilvac/react-simple-contenteditable).
 
 ## Why?
-ContentEditable has some known issues, the purpose of this component is to avoid some of its problems:
+ContentEditable has some known issues, like the cursor jumping around. The purpose of this component is to deal with the implementation details so you don't have to! 🔥
 
-* Allow plaintext-only mode;
-* Prevent cursor jumping to the beginning of the field.
+* Clean and sanitise the output
+* Remove rich text formatting when pasting
+* Prevent the cursor from jumping around
 
 ## Example
 ```jsx
@@ -33,7 +34,6 @@ class App extends Component {
         <ContentEditable
           tagName="h1"
           className="my-class"
-          mode="plaintext"
           content={this.state.title}
           editable={true}
           maxLength={140}
