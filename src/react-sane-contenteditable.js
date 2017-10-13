@@ -12,18 +12,16 @@ const propTypes = {
   tagName: PropTypes.string,
 }
 
-export default class ContentEditable extends Component {
-  static propTypes = propTypes;
+const defaultProps = {
+  content: '',
+  editable: true,
+  maxLength: Infinity,
+  multiLine: false,
+  sanitise: true,
+  tagName: 'div',
+}
 
-  static defaultProps = {
-    content: '',
-    editable: true,
-    maxLength: Infinity,
-    multiLine: false,
-    sanitise: true,
-    tagName: 'div',
-  }
-
+class ContentEditable extends Component {
   constructor(props) {
     super(props);
 
@@ -33,7 +31,7 @@ export default class ContentEditable extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.content !== this.cleanOutput(this.state.value)) {
+    if (nextProps.content !== this.sanitiseValue(this.state.value)) {
       this.setState({ value: nextProps.content }, this.forceUpdate);
     }
   }
@@ -47,7 +45,7 @@ export default class ContentEditable extends Component {
     );
   }
 
-  cleanOutput(val) {
+  sanitiseValue(val) {
     const { maxLength, multiLine, sanitise } = this.props;
 
     if (!sanitise) {
@@ -73,11 +71,13 @@ export default class ContentEditable extends Component {
   }
 
   _onChange = (ev) => {
-    const value = this.refs.element.innerText;
+    const { sanatise } = this.props;
+    const rawValue = this.refs.element.innerText;
+    const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
 
     if (this.state.value !== value) {
-      this.setState({ value }, () => {
-        this.props.onChange(ev, this.cleanOutput(value));
+      this.setState({ value: rawValue }, () => {
+        this.props.onChange(ev, value);
       });
     }
   }
@@ -91,8 +91,11 @@ export default class ContentEditable extends Component {
   }
 
   _onBlur = (ev) => {
-    const value = this.cleanOutput(this.refs.element.innerText);
+    const { sanitise } = this.props;
+    const rawValue = this.refs.element.innerText;
+    const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
 
+    // We finally set the state to the sanitised version (rather than the `rawValue`) because we're blurring the field.
     this.setState({ value }, () => {
       this.forceUpdate();
       this.props.onChange(ev, value);
@@ -133,3 +136,8 @@ export default class ContentEditable extends Component {
     );
   }
 }
+
+ContentEditable.propTypes = propTypes;
+ContentEditable.defaultProps = defaultProps;
+
+export default ContentEditable;
