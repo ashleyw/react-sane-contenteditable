@@ -4,7 +4,7 @@ React component with sane defaults to make any element contentEditable
 Based on [react-simple-contenteditable](https://github.com/raphasilvac/react-simple-contenteditable).
 
 ## Why?
-ContentEditable has some known issues. The purpose of this component is to deal with the implementation details so you don't have to! 🔥
+ContentEditable has some well known issues, and the purpose of this component is to deal with them so you don't have to! 🔥
 
 * Clean and sanitise the output
 * Remove rich text formatting when pasting
