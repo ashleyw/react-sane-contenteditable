@@ -10,7 +10,7 @@ const propTypes = {
   onChange: PropTypes.func,
   sanitise: PropTypes.bool,
   tagName: PropTypes.string,
-}
+};
 
 const defaultProps = {
   content: '',
@@ -19,7 +19,7 @@ const defaultProps = {
   multiLine: false,
   sanitise: true,
   tagName: 'div',
-}
+};
 
 class ContentEditable extends Component {
   constructor(props) {
@@ -72,7 +72,7 @@ class ContentEditable extends Component {
 
   _onChange = (ev) => {
     const { sanitise } = this.props;
-    const rawValue = this.refs.element.innerText;
+    const rawValue = this._element.innerText;
     const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
 
     if (this.state.value !== value) {
@@ -92,7 +92,7 @@ class ContentEditable extends Component {
 
   _onBlur = (ev) => {
     const { sanitise } = this.props;
-    const rawValue = this.refs.element.innerText;
+    const rawValue = this._element.innerText;
     const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
 
     // We finally set the state to the sanitised version (rather than the `rawValue`) because we're blurring the field.
@@ -104,7 +104,7 @@ class ContentEditable extends Component {
 
   _onKeyDown = (ev) => {
     const { maxLength, multiLine } = this.props;
-    const value = this.refs.element.innerText;
+    const value = this._element.innerText;
 
     // return key
     if (!multiLine && ev.keyCode === 13) {
@@ -124,7 +124,7 @@ class ContentEditable extends Component {
     return (
       <Element
         {...omit(props, Object.keys(propTypes))}
-        ref="element"
+        ref={(c) => this._element = c;}
         style={{ whiteSpace: 'pre-wrap', ...props.style }}
         contentEditable={editable}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
