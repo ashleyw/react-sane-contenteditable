@@ -71,7 +71,7 @@ class ContentEditable extends Component {
   }
 
   _onChange = (ev) => {
-    const { sanatise } = this.props;
+    const { sanitise } = this.props;
     const rawValue = this.refs.element.innerText;
     const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
 
