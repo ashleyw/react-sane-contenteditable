@@ -124,7 +124,7 @@ class ContentEditable extends Component {
     return (
       <Element
         {...omit(props, Object.keys(propTypes))}
-        ref={(c) => this._element = c;}
+        ref={(c) => this._element = c}
         style={{ whiteSpace: 'pre-wrap', ...props.style }}
         contentEditable={editable}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
