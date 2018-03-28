@@ -10,6 +10,10 @@ const propTypes = {
   onChange: PropTypes.func,
   sanitise: PropTypes.bool,
   tagName: PropTypes.string,
+  innerRef: PropTypes.func,
+  onBlur: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  onPaste: PropTypes.func,
 };
 
 const defaultProps = {
@@ -19,6 +23,10 @@ const defaultProps = {
   multiLine: false,
   sanitise: true,
   tagName: 'div',
+  innerRef: () => {},
+  onBlur: () => {},
+  onKeyDown: () => {},
+  onPaste: () => {},
 };
 
 class ContentEditable extends Component {
@@ -88,6 +96,8 @@ class ContentEditable extends Component {
     ev.preventDefault();
     const text = ev.clipboardData.getData('text').substr(0, maxLength);
     document.execCommand('insertText', false, text);
+
+    this.props.onPaste(ev);
   }
 
   _onBlur = (ev) => {
@@ -100,6 +110,8 @@ class ContentEditable extends Component {
       this.forceUpdate();
       this.props.onChange(ev, value);
     });
+
+    this.props.onBlur(ev);
   }
 
   _onKeyDown = (ev) => {
@@ -116,6 +128,8 @@ class ContentEditable extends Component {
     if (maxLength && !ev.metaKey && ev.which !== 8 && value.replace(/\s\s/g, ' ').length >= maxLength) {
       ev.preventDefault();
     }
+
+    this.props.onKeyDown(ev);
   }
 
   render() {
@@ -124,7 +138,10 @@ class ContentEditable extends Component {
     return (
       <Element
         {...omit(props, Object.keys(propTypes))}
-        ref={(c) => this._element = c}
+        ref={(c) => {
+          this._element = c;
+          props.innerRef(c);
+        }}
         style={{ whiteSpace: 'pre-wrap', ...props.style }}
         contentEditable={editable}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
