@@ -1,6 +1,6 @@
 {
   "name": "react-sane-contenteditable",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "React component with sane defaults to make any element contentEditable",
   "main": "lib/index.js",
   "repository": {
@@ -9,7 +9,8 @@
   },
   "author": "Ashley Williams <hi@ashleyw.co.uk>",
   "contributors": [
-    "Raphael Silva Cavalcanti"
+    "Raphael Silva Cavalcanti",
+    "Jess Telford"
   ],
   "license": "MIT",
   "dependencies": {
