@@ -10,7 +10,7 @@ const propTypes = {
   onChange: PropTypes.func,
   sanitise: PropTypes.bool,
   /** The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component */
-  tagName: PropTypes.string,
+  tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
