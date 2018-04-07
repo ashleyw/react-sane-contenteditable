@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { omit, isEqual, pick } from 'lodash';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { omit, isEqual, pick } from "lodash";
 
 const propTypes = {
   content: PropTypes.string,
@@ -14,19 +14,23 @@ const propTypes = {
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
   onPaste: PropTypes.func,
+  styled: PropTypes.bool
 };
 
 const defaultProps = {
-  content: '',
+  content: "",
   editable: true,
   maxLength: Infinity,
   multiLine: false,
   sanitise: true,
-  tagName: 'div',
   innerRef: () => {},
   onBlur: () => {},
   onKeyDown: () => {},
   onPaste: () => {},
+  /** The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component */
+  tagName: "div",
+  /** el is a styled component (uses innerRef instead of ref) */
+  styled: false
 };
 
 class ContentEditable extends Component {
@@ -34,7 +38,7 @@ class ContentEditable extends Component {
     super(props);
 
     this.state = {
-      value: props.content,
+      value: props.content
     };
   }
 
@@ -45,12 +49,9 @@ class ContentEditable extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const propKeys = omit(Object.keys(propTypes), ['content']);
+    const propKeys = omit(Object.keys(propTypes), ["content"]);
 
-    return !isEqual(
-      pick(nextProps, propKeys),
-      pick(this.props, propKeys)
-    );
+    return !isEqual(pick(nextProps, propKeys), pick(this.props, propKeys));
   }
 
   sanitiseValue(val) {
@@ -61,24 +62,28 @@ class ContentEditable extends Component {
     }
 
     // replace encoded spaces
-    let value = val.replace(/&nbsp;/g, ' ');
+    let value = val.replace(/&nbsp;/g, " ");
 
     if (multiLine) {
       // replace any 2+ character whitespace (other than new lines) with a single space
-      value = value.replace(/[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g, ' ');
+      value = value.replace(
+        /[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g,
+        " "
+      );
     } else {
-      value = value.replace(/\s+/g, ' ');
+      value = value.replace(/\s+/g, " ");
     }
 
-    return value.split('\n')
+    return value
+      .split("\n")
       .map(line => line.trim())
-      .join('\n')
-      .replace(/\n{3,}/g, '\n\n') // replace 3+ linebreaks with two
+      .join("\n")
+      .replace(/\n{3,}/g, "\n\n") // replace 3+ linebreaks with two
       .trim()
       .substr(0, maxLength);
   }
 
-  _onChange = (ev) => {
+  _onChange = ev => {
     const { sanitise } = this.props;
     const rawValue = this._element.innerText;
     const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
@@ -88,19 +93,19 @@ class ContentEditable extends Component {
         this.props.onChange(ev, value);
       });
     }
-  }
+  };
 
-  _onPaste = (ev) => {
+  _onPaste = ev => {
     const { maxLength } = this.props;
 
     ev.preventDefault();
-    const text = ev.clipboardData.getData('text').substr(0, maxLength);
-    document.execCommand('insertText', false, text);
+    const text = ev.clipboardData.getData("text").substr(0, maxLength);
+    document.execCommand("insertText", false, text);
 
     this.props.onPaste(ev);
-  }
+  };
 
-  _onBlur = (ev) => {
+  _onBlur = ev => {
     const { sanitise } = this.props;
     const rawValue = this._element.innerText;
     const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
@@ -112,9 +117,9 @@ class ContentEditable extends Component {
     });
 
     this.props.onBlur(ev);
-  }
+  };
 
-  _onKeyDown = (ev) => {
+  _onKeyDown = ev => {
     const { maxLength, multiLine } = this.props;
     const value = this._element.innerText;
 
@@ -125,24 +130,44 @@ class ContentEditable extends Component {
     }
 
     // Ensure we don't exceed `maxLength` (keycode 8 === backspace)
-    if (maxLength && !ev.metaKey && ev.which !== 8 && value.replace(/\s\s/g, ' ').length >= maxLength) {
+    if (
+      maxLength &&
+      !ev.metaKey &&
+      ev.which !== 8 &&
+      value.replace(/\s\s/g, " ").length >= maxLength
+    ) {
       ev.preventDefault();
     }
 
     this.props.onKeyDown(ev);
-  }
+  };
 
   render() {
-    const { tagName: Element, content, editable, ...props } = this.props;
+    const {
+      tagName: Element,
+      content,
+      editable,
+      styled,
+      ...props
+    } = this.props;
 
     return (
       <Element
         {...omit(props, Object.keys(propTypes))}
-        ref={(c) => {
-          this._element = c;
-          props.innerRef(c);
-        }}
-        style={{ whiteSpace: 'pre-wrap', ...props.style }}
+        {...(styled
+          ? {
+              innerRef: c => {
+                this._element = c;
+                props.innerRef(c);
+              }
+            }
+          : {
+              ref: c => {
+                this._element = c;
+                props.innerRef(c);
+              }
+            })}
+        style={{ whiteSpace: "pre-wrap", ...props.style }}
         contentEditable={editable}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
         onBlur={this._onBlur}
