@@ -9,11 +9,13 @@ const propTypes = {
   multiLine: PropTypes.bool,
   onChange: PropTypes.func,
   sanitise: PropTypes.bool,
+  /** The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component */
   tagName: PropTypes.string,
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
   onPaste: PropTypes.func,
+  /** tagName is a styled component (uses innerRef instead of ref) */
   styled: PropTypes.bool,
 };
 
@@ -23,13 +25,11 @@ const defaultProps = {
   maxLength: Infinity,
   multiLine: false,
   sanitise: true,
+  tagName: 'div',
   innerRef: () => {},
   onBlur: () => {},
   onKeyDown: () => {},
   onPaste: () => {},
-  /** The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component */
-  tagName: 'div',
-  /** el is a styled component (uses innerRef instead of ref) */
   styled: false,
 };
 
@@ -51,7 +51,10 @@ class ContentEditable extends Component {
   shouldComponentUpdate(nextProps) {
     const propKeys = omit(Object.keys(propTypes), ['content']);
 
-    return !isEqual(pick(nextProps, propKeys), pick(this.props, propKeys));
+    return !isEqual(
+      pick(nextProps, propKeys),
+      pick(this.props, propKeys)
+    );
   }
 
   sanitiseValue(val) {
@@ -71,8 +74,7 @@ class ContentEditable extends Component {
       value = value.replace(/\s+/g, ' ');
     }
 
-    return value
-      .split('\n')
+    return value.split('\n')
       .map(line => line.trim())
       .join('\n')
       .replace(/\n{3,}/g, '\n\n') // replace 3+ linebreaks with two
@@ -80,7 +82,7 @@ class ContentEditable extends Component {
       .substr(0, maxLength);
   }
 
-  _onChange = ev => {
+  _onChange = (ev) => {
     const { sanitise } = this.props;
     const rawValue = this._element.innerText;
     const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
@@ -90,9 +92,9 @@ class ContentEditable extends Component {
         this.props.onChange(ev, value);
       });
     }
-  };
+  }
 
-  _onPaste = ev => {
+  _onPaste = (ev) => {
     const { maxLength } = this.props;
 
     ev.preventDefault();
@@ -100,9 +102,9 @@ class ContentEditable extends Component {
     document.execCommand('insertText', false, text);
 
     this.props.onPaste(ev);
-  };
+  }
 
-  _onBlur = ev => {
+  _onBlur = (ev) => {
     const { sanitise } = this.props;
     const rawValue = this._element.innerText;
     const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
@@ -114,9 +116,9 @@ class ContentEditable extends Component {
     });
 
     this.props.onBlur(ev);
-  };
+  }
 
-  _onKeyDown = ev => {
+  _onKeyDown = (ev) => {
     const { maxLength, multiLine } = this.props;
     const value = this._element.innerText;
 
@@ -132,7 +134,7 @@ class ContentEditable extends Component {
     }
 
     this.props.onKeyDown(ev);
-  };
+  }
 
   render() {
     const { tagName: Element, content, editable, styled, ...props } = this.props;
@@ -141,18 +143,18 @@ class ContentEditable extends Component {
       <Element
         {...omit(props, Object.keys(propTypes))}
         {...(styled
-          ? {
-              innerRef: c => {
-                this._element = c;
-                props.innerRef(c);
-              },
-            }
-          : {
-              ref: c => {
-                this._element = c;
-                props.innerRef(c);
-              },
-            })}
+            ? {
+                innerRef: (c) => {
+                  this._element = c;
+                  props.innerRef(c);
+                },
+              }
+            : {
+                ref: (c) => {
+                  this._element = c;
+                  props.innerRef(c);
+                },
+        })}
         style={{ whiteSpace: 'pre-wrap', ...props.style }}
         contentEditable={editable}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
