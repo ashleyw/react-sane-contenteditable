@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { omit, isEqual, pick } from "lodash";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { omit, isEqual, pick } from 'lodash';
 
 const propTypes = {
   content: PropTypes.string,
@@ -14,11 +14,11 @@ const propTypes = {
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
   onPaste: PropTypes.func,
-  styled: PropTypes.bool
+  styled: PropTypes.bool,
 };
 
 const defaultProps = {
-  content: "",
+  content: '',
   editable: true,
   maxLength: Infinity,
   multiLine: false,
@@ -28,9 +28,9 @@ const defaultProps = {
   onKeyDown: () => {},
   onPaste: () => {},
   /** The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component */
-  tagName: "div",
+  tagName: 'div',
   /** el is a styled component (uses innerRef instead of ref) */
-  styled: false
+  styled: false,
 };
 
 class ContentEditable extends Component {
@@ -38,7 +38,7 @@ class ContentEditable extends Component {
     super(props);
 
     this.state = {
-      value: props.content
+      value: props.content,
     };
   }
 
@@ -49,7 +49,7 @@ class ContentEditable extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const propKeys = omit(Object.keys(propTypes), ["content"]);
+    const propKeys = omit(Object.keys(propTypes), ['content']);
 
     return !isEqual(pick(nextProps, propKeys), pick(this.props, propKeys));
   }
@@ -62,23 +62,20 @@ class ContentEditable extends Component {
     }
 
     // replace encoded spaces
-    let value = val.replace(/&nbsp;/g, " ");
+    let value = val.replace(/&nbsp;/g, ' ');
 
     if (multiLine) {
       // replace any 2+ character whitespace (other than new lines) with a single space
-      value = value.replace(
-        /[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g,
-        " "
-      );
+      value = value.replace(/[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g, ' ');
     } else {
-      value = value.replace(/\s+/g, " ");
+      value = value.replace(/\s+/g, ' ');
     }
 
     return value
-      .split("\n")
+      .split('\n')
       .map(line => line.trim())
-      .join("\n")
-      .replace(/\n{3,}/g, "\n\n") // replace 3+ linebreaks with two
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n') // replace 3+ linebreaks with two
       .trim()
       .substr(0, maxLength);
   }
@@ -99,8 +96,8 @@ class ContentEditable extends Component {
     const { maxLength } = this.props;
 
     ev.preventDefault();
-    const text = ev.clipboardData.getData("text").substr(0, maxLength);
-    document.execCommand("insertText", false, text);
+    const text = ev.clipboardData.getData('text').substr(0, maxLength);
+    document.execCommand('insertText', false, text);
 
     this.props.onPaste(ev);
   };
@@ -130,12 +127,7 @@ class ContentEditable extends Component {
     }
 
     // Ensure we don't exceed `maxLength` (keycode 8 === backspace)
-    if (
-      maxLength &&
-      !ev.metaKey &&
-      ev.which !== 8 &&
-      value.replace(/\s\s/g, " ").length >= maxLength
-    ) {
+    if (maxLength && !ev.metaKey && ev.which !== 8 && value.replace(/\s\s/g, ' ').length >= maxLength) {
       ev.preventDefault();
     }
 
@@ -143,13 +135,7 @@ class ContentEditable extends Component {
   };
 
   render() {
-    const {
-      tagName: Element,
-      content,
-      editable,
-      styled,
-      ...props
-    } = this.props;
+    const { tagName: Element, content, editable, styled, ...props } = this.props;
 
     return (
       <Element
@@ -159,15 +145,15 @@ class ContentEditable extends Component {
               innerRef: c => {
                 this._element = c;
                 props.innerRef(c);
-              }
+              },
             }
           : {
               ref: c => {
                 this._element = c;
                 props.innerRef(c);
-              }
+              },
             })}
-        style={{ whiteSpace: "pre-wrap", ...props.style }}
+        style={{ whiteSpace: 'pre-wrap', ...props.style }}
         contentEditable={editable}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
         onBlur={this._onBlur}
