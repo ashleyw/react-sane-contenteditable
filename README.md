@@ -1,32 +1,35 @@
 # react-sane-contenteditable
+
 React component with sane defaults to make any element contentEditable
 
-Based on [react-simple-contenteditable](https://github.com/raphasilvac/react-simple-contenteditable).
+[![npm version](https://badge.fury.io/js/react-sane-contenteditable.svg)](https://badge.fury.io/js/react-sane-contenteditable)
 
 ## Why?
-ContentEditable has some well known issues, and the purpose of this component is to deal with them so you don't have to! 🔥
+
+ContentEditable has some well known issues, and the purpose of this component is to deal with them in a sane manner so we don't have to continue re-inventing the wheel! 🔥
 
 * Clean and sanitise the output
 * Remove rich text formatting when pasting
 * Prevent the cursor from jumping around
 
 ## Example
+
 ```jsx
-import React, { Component } from 'react';
-import ContentEditable from 'react-sane-contenteditable';
+import React, { Component } from "react";
+import ContentEditable from "react-sane-contenteditable";
 
 class App extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
       title: "Title here"
-    }
+    };
   }
 
   handleChange = (ev, value) => {
     this.setState({ title: value });
-  }
+  ;}
 
   render() {
     return (
@@ -38,11 +41,10 @@ class App extends Component {
           editable={true}
           maxLength={140}
           multiLine={false}
-          onChange={ this.handleChange }
+          onChange={this.handleChange}
         />
       </div>
     );
   }
 }
-
 ```
