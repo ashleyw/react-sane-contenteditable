@@ -7,16 +7,14 @@ const propTypes = {
   editable: PropTypes.bool,
   maxLength: PropTypes.number,
   multiLine: PropTypes.bool,
-  onChange: PropTypes.func,
   sanitise: PropTypes.bool,
-  /** The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component */
-  tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  tagName: PropTypes.string, // The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
   onPaste: PropTypes.func,
-  /** tagName is a styled component (uses innerRef instead of ref) */
-  styled: PropTypes.bool
+  onChange: PropTypes.func,
+  styled: PropTypes.bool // If element is a styled component (uses innerRef instead of ref)
 };
 
 const defaultProps = {
@@ -30,11 +28,7 @@ const defaultProps = {
   onBlur: () => {},
   onKeyDown: () => {},
   onPaste: () => {},
-  /** The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component */
-  tagName: "div",
-  /** element is a styled component (uses innerRef instead of ref) */
-  innerRef: PropTypes.func,
-  /** el is a styled component (uses innerRef instead of ref) */
+  onChange: () => {},
   styled: false
 };
 
