@@ -129,7 +129,9 @@ class ContentEditable extends Component {
       ev.preventDefault();
     }
 
-    this.props.onKeyDown(ev);
+    setTimeout(() => {
+      this.props.onKeyDown(ev, this._element.innerText);
+    }, 0);
   }
 
   render() {
