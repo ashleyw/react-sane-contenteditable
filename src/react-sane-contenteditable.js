@@ -8,7 +8,7 @@ const propTypes = {
   maxLength: PropTypes.number,
   multiLine: PropTypes.bool,
   sanitise: PropTypes.bool,
-  tagName: PropTypes.string, // The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component
+  tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]), // The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
