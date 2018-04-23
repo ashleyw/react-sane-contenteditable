@@ -9,11 +9,14 @@ const propTypes = {
   multiLine: PropTypes.bool,
   onChange: PropTypes.func,
   sanitise: PropTypes.bool,
-  tagName: PropTypes.string,
+  /** The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component */
+  tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
   onPaste: PropTypes.func,
+  /** tagName is a styled component (uses innerRef instead of ref) */
+  styled: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -27,6 +30,7 @@ const defaultProps = {
   onBlur: () => {},
   onKeyDown: () => {},
   onPaste: () => {},
+  styled: false,
 };
 
 class ContentEditable extends Component {
@@ -135,15 +139,24 @@ class ContentEditable extends Component {
   }
 
   render() {
-    const { tagName: Element, content, editable, ...props } = this.props;
+    const { tagName: Element, content, editable, styled, ...props } = this.props;
 
     return (
       <Element
         {...omit(props, Object.keys(propTypes))}
-        ref={(c) => {
-          this._element = c;
-          props.innerRef(c);
-        }}
+        {...(styled
+            ? {
+                innerRef: (c) => {
+                  this._element = c;
+                  props.innerRef(c);
+                },
+              }
+            : {
+                ref: (c) => {
+                  this._element = c;
+                  props.innerRef(c);
+                },
+        })}
         style={{ whiteSpace: 'pre-wrap', ...props.style }}
         contentEditable={editable}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
