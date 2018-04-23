@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { omit, isEqual, pick } from 'lodash';
+import { omit, isEqual, pick, without } from 'lodash';
 
 const propTypes = {
   content: PropTypes.string,
@@ -45,7 +45,7 @@ class ContentEditable extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const propKeys = omit(Object.keys(propTypes), ['content']);
+    const propKeys = without(Object.keys(propTypes), ['content']);
 
     return !isEqual(
       pick(nextProps, propKeys),
