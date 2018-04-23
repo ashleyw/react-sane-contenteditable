@@ -1,8 +1,8 @@
 # react-sane-contenteditable
 
-React component with sane defaults to make any element contentEditable
-
 [![npm version](https://badge.fury.io/js/react-sane-contenteditable.svg)](https://badge.fury.io/js/react-sane-contenteditable)
+
+React component with sane defaults to make any element contentEditable
 
 ## Why?
 
@@ -29,7 +29,7 @@ class App extends Component {
 
   handleChange = (ev, value) => {
     this.setState({ title: value });
-  ;}
+  };
 
   render() {
     return (
