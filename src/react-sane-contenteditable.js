@@ -110,8 +110,8 @@ class ContentEditable extends Component {
 
     // We finally set the state to the sanitised version (rather than the `rawValue`) because we're blurring the field.
     this.setState({ value }, () => {
-      this.forceUpdate();
       this.props.onChange(ev, value);
+      this.forceUpdate();
     });
 
     this.props.onBlur(ev);
@@ -169,6 +169,7 @@ class ContentEditable extends Component {
             })}
         style={{ whiteSpace: "pre-wrap", ...props.style }}
         contentEditable={editable}
+        key={Date()}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
         onBlur={this._onBlur}
         onInput={this._onChange}
