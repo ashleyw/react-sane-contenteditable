@@ -4,7 +4,7 @@
 
 React component with sane defaults to make any element contentEditable
 
-### **DEMO:** https://jsfiddle.net/ca93fp1b/show/
+### **DEMO:** https://jsfiddle.net/zp2v824s/show
 
 ## Why?
 
