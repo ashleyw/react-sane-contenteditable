@@ -42,7 +42,7 @@
   },
   "scripts": {
     "build": "babel src/react-sane-contenteditable.js --out-file lib/index.js",
-    "prepublish": "npm run build",
+    "prepublish": "yarn build",
     "demo": "./node_modules/rollup/bin/rollup --config example/rollup.config.js"
   },
   "bugs": {

@@ -4,6 +4,8 @@
 
 React component with sane defaults to make any element contentEditable
 
+### **DEMO:** https://jsfiddle.net/ca93fp1b/show/
+
 ## Why?
 
 ContentEditable has some well known issues, and the purpose of this component is to deal with them in a sane manner so we don't have to continue re-inventing the wheel! 🔥
