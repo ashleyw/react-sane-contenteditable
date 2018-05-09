@@ -43,7 +43,7 @@
     "rollup-plugin-serve": "^0.4.2"
   },
   "scripts": {
-    "build": "babel src/react-sane-contenteditable.js --out-file lib/index.js",
+    "build": "./node_modules/.bin/babel src/react-sane-contenteditable.js --out-file lib/index.js",
     "prepublish": "yarn build",
     "demo": "./node_modules/rollup/bin/rollup --config example/rollup.config.js"
   },
