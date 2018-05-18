@@ -12,8 +12,7 @@ export default {
   plugins: [
     nodeResolve({ preferBuiltins: false }),
     babel({
-      exclude: "node_modules/**",
-      externalHelpers: true
+      exclude: "node_modules/**"
     }),
     commonjs({
       include: ["node_modules/**"],
