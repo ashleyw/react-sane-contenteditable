@@ -60,4 +60,7 @@ typings/
 # IDE specific
 .idea
 
+# OS Specific
+.DS_Store
+
 example/index.min.js
