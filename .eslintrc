@@ -1,0 +1,27 @@
+{
+    "rules": {
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "max-len": ["warn", 190],
+        "react/forbid-prop-types": [0],
+        "no-multi-assign": 0,
+        "jest/no-disabled-tests": "warn",
+        "jest/no-focused-tests": "error",
+        "jest/no-identical-title": "error",
+        "jest/prefer-to-have-length": "warn",
+        "jest/valid-expect": "error"
+    },
+    "env": {
+        "es6": true,
+        "browser": true,
+        "jest/globals": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "extends": ["airbnb", "plugin:jest/recommended"],
+    "parser": "babel-eslint",
+    "plugins": ["babel", "react", "jsx-a11y", "import", "jest"]
+}
