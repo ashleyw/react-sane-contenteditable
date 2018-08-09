@@ -125,6 +125,8 @@ class ContentEditable extends Component {
     if (!multiLine && ev.keyCode === 13) {
       ev.preventDefault();
       ev.currentTarget.blur();
+      // Call onKeyUp directly as ev.preventDefault() means that it will not be called
+      this._onKeyUp(ev);
     }
 
     // Ensure we don't exceed `maxLength` (keycode 8 === backspace)
@@ -135,11 +137,17 @@ class ContentEditable extends Component {
       value.replace(/\s\s/g, " ").length >= maxLength
     ) {
       ev.preventDefault();
+      // Call onKeyUp directly as ev.preventDefault() means that it will not be called
+      this._onKeyUp(ev);
     }
+  };
 
-    setTimeout(() => {
-      this.props.onKeyDown(ev, this._element.innerText);
-    }, 0);
+  _onKeyUp = ev => {
+    // Call prop.onKeyDown callback from the onKeyUp event to mitigate both of these issues:
+    // Access to Synthetic event: https://github.com/ashleyw/react-sane-contenteditable/issues/14
+    // Current value onKeyDown: https://github.com/ashleyw/react-sane-contenteditable/pull/6
+    // this._onKeyDown can't be moved in it's entirety to onKeyUp as we lose the opportunity to preventDefault
+    this.props.onKeyDown(ev, this._element.innerText)
   };
 
   render() {
@@ -174,6 +182,7 @@ class ContentEditable extends Component {
         onBlur={this._onBlur}
         onInput={this._onChange}
         onKeyDown={this._onKeyDown}
+        onKeyUp={this._onKeyUp}
         onPaste={this._onPaste}
       />
     );
