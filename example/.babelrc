@@ -1,7 +1,7 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
         "modules": false,
         "targets": {
@@ -9,11 +9,11 @@
         }
       }
     ],
-    "react"
+    "@babel/preset-react"
   ],
   "plugins": [
-    "external-helpers",
-    "transform-object-rest-spread",
-    "transform-class-properties"
+    "@babel/plugin-external-helpers",
+    "@babel/plugin-transform-spread",
+    "@babel/plugin-proposal-class-properties"
   ]
 }
