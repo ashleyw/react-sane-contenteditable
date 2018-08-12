@@ -54,7 +54,7 @@ describe('Handles props', () => {
 
   it('renders the props.content', () => {
     const content = 'foo';
-    const wrapper = mount(<ContentEditable content={content} />);
+    const wrapper = shallow(<ContentEditable content={content} />);
     expect(wrapper.render().text()).toEqual(content);
   });
 
@@ -69,10 +69,22 @@ describe('Handles props', () => {
     expect(wrapper.prop('innerRef')).toEqual(expect.any(Function));
   });
 
+  it('shouldComponentUpdate returns false when props are the same', () => {
+    const wrapper = mount(<ContentEditable multiLine />);
+    const shouldUpdate = wrapper.instance().shouldComponentUpdate(wrapper.props());
+    expect(shouldUpdate).toBe(false);
+  });
+
+  it('shouldComponentUpdate returns true when props are different', () => {
+    const wrapper = mount(<ContentEditable multiLine />);
+    const shouldUpdate = wrapper.instance().shouldComponentUpdate({ ...wrapper.props(), sanitise: false });
+    expect(shouldUpdate).toBe(true);
+  });
+
   xdescribe('Failing tests to fix in component', () => {
     it('renders the props.content respecting maxLength={5}', () => {
       const content = 'foo bar';
-      const wrapper = mount(<ContentEditable content={content} maxLength={5} />);
+      const wrapper = shallow(<ContentEditable content={content} maxLength={5} />);
       expect(wrapper.render().text()).toEqual('foo ba');
     });
   });
