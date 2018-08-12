@@ -11,9 +11,9 @@ describe('Default behaviour', () => {
     expect(wrapper.find('div')).toHaveLength(1);
   });
 
-  it('sets ref handler', () => {
-    const wrapper = mount(<ContentEditable />);
-    expect(wrapper.prop('innerRef')).toEqual(expect.any(Function));
+  it('sets a key', () => {
+    const wrapper = shallow(<ContentEditable />);
+    expect(wrapper.key()).toEqual(Date());
   });
 
   it('sets contenteditable', () => {
@@ -35,8 +35,6 @@ describe('Default behaviour', () => {
     wrapper.find('div').simulate('input');
     expect(wrapper.state('value')).toEqual(nextInput);
   });
-
-  // @todo: sets props.key={Date()}
 });
 
 describe('Handles props', () => {
@@ -65,7 +63,19 @@ describe('Handles props', () => {
     expect(wrapper.prop('contentEditable')).toBe(false);
   });
 
-  // @todo props.maxLength
+  // @todo: I think Enzyme converts props.ref to props.innerRef when props.styled={false}
+  it('props.styled={true} sets innerRef handler', () => {
+    const wrapper = mount(<ContentEditable />);
+    expect(wrapper.prop('innerRef')).toEqual(expect.any(Function));
+  });
+
+  xdescribe('Failing tests to fix in component', () => {
+    it('renders the props.content respecting maxLength={5}', () => {
+      const content = 'foo bar';
+      const wrapper = mount(<ContentEditable content={content} maxLength={5} />);
+      expect(wrapper.render().text()).toEqual('foo ba');
+    });
+  });
 });
 
 describe('Sanitisation', () => {
@@ -113,6 +123,17 @@ describe('Sanitisation', () => {
     wrapper.instance()._element.innerText = 'foo\nbar';
     focusThenBlur(wrapper);
     expect(wrapper.state('value')).toEqual('foo bar');
+  });
+
+  it('value trimmed when maxLength exceeded', () => {
+    const maxLength = 5;
+    const content = 'foo';
+    const wrapper = mount(<ContentEditable content={content} maxLength={maxLength} />);
+    const dom = wrapper.instance()._element;
+
+    dom.innerText = `${content} bar`;
+    focusThenBlur(wrapper);
+    expect(wrapper.state('value')).toHaveLength(maxLength);
   });
 
   describe('with props.multiLine', () => {
@@ -227,14 +248,14 @@ describe('Sanitisation', () => {
 });
 
 describe('Calls handlers', () => {
-  it('props.innerRef', () => {
+  it('props.innerRef called', () => {
     const mockHandler = jest.fn();
     const wrapper = mount(<ContentEditable innerRef={mockHandler} />);
     wrapper.render();
     expect(mockHandler).toHaveBeenCalled();
   });
 
-  it('props.onBlur', () => {
+  it('props.onBlur called', () => {
     const mockHandler = jest.fn();
     const content = 'foo';
     const wrapper = mount(<ContentEditable content={content} onBlur={mockHandler} />);
@@ -246,7 +267,7 @@ describe('Calls handlers', () => {
     }));
   });
 
-  it('props.onChange', () => {
+  it('props.onChange called', () => {
     const mockHandler = jest.fn();
     const wrapper = mount(<ContentEditable content="foo" onChange={mockHandler} />);
     const dom = wrapper.instance()._element;
@@ -263,16 +284,7 @@ describe('Calls handlers', () => {
     );
   });
 
-  it('props.onChange not called when maxLength exceeded', () => {
-    const mockHandler = jest.fn();
-    const wrapper = mount(<ContentEditable content="foo" maxLength={3} onChange={mockHandler} />);
-
-    wrapper.instance()._element.innerText = 'foo bar';
-    wrapper.find('div').simulate('input');
-    expect(mockHandler).not.toHaveBeenCalled();
-  });
-
-  it('props.onKeyDown', () => {
+  it('props.onKeyDown called', () => {
     const mockHandler = jest.fn();
     const content = 'foo';
     const wrapper = mount(<ContentEditable content={content} onKeyDown={mockHandler} />);
@@ -289,24 +301,30 @@ describe('Calls handlers', () => {
     );
   });
 
-  it('props.onKeyDown called with full input value when maxLength exceeded', () => {
-    const mockHandler = jest.fn();
-    const content = 'foo bar';
-    const wrapper = mount(<ContentEditable content={content} maxLength={3} onKeyDown={mockHandler} />);
+  it('keydown event.preventDefault called when maxLength exceeded', () => {
+    const mockPreventDefault = jest.fn();
+    const content = 'foo b';
+    const wrapper = mount(<ContentEditable content={content} maxLength={content.length} />);
     const dom = wrapper.instance()._element;
 
     dom.innerText = content;
-    wrapper.find('div').simulate('keydown', { metaKey: false });
-    expect(mockHandler).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'keydown',
-        nativeEvent: expect.any(Object),
-      }),
-      content,
-    );
+    wrapper.find('div').simulate('keydown', {
+      metaKey: false,
+      preventDefault: mockPreventDefault,
+    });
+    expect(mockPreventDefault).toHaveBeenCalled();
   });
 
-  it('props.onPaste', () => {
+  it('props.onChange not called when maxLength exceeded', () => {
+    const mockHandler = jest.fn();
+    const wrapper = mount(<ContentEditable content="foo" maxLength={3} onChange={mockHandler} />);
+
+    wrapper.instance()._element.innerText = 'foo bar';
+    wrapper.find('div').simulate('input');
+    expect(mockHandler).not.toHaveBeenCalled();
+  });
+
+  it('props.onPaste called', () => {
     const mockOnPaste = jest.fn().mockName('onPaste');
     const mockExecCommand = jest.fn().mockName('execCommand');
     const mockGetClipboardData = jest.fn().mockName('getClipboardData');
