@@ -43,7 +43,7 @@ class ContentEditable extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.content !== this.sanitiseValue(this.state.value)) {
-      this.setState({ value: nextProps.content }, this.forceUpdate);
+      this.setState({ value: nextProps.content });
     }
   }
 

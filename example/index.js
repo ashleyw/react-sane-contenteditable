@@ -15,6 +15,10 @@ class App extends Component {
     this.setState({ title: value });
   };
 
+  handleKeyDown = (ev, value) => {
+    this.setState({ title: value });
+  };
+
   render() {
     return (
       <div className="App">
@@ -26,6 +30,7 @@ class App extends Component {
           maxLength={140}
           multiLine={true}
           onChange={this.handleChange}
+          onKeyDown={this.handleKeyDown}
         />
 
         <b>Value:</b>
@@ -33,7 +38,7 @@ class App extends Component {
           style={{
             fontSize: 14,
             fontFamily:
-              "'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace"
+              '\'Courier New\', Courier, \'Lucida Sans Typewriter\', \'Lucida Typewriter\', monospace'
           }}
         >
           {this.state.title}
