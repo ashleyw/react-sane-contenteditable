@@ -15,6 +15,10 @@ class App extends Component {
     this.setState({ title: value });
   };
 
+  handleKeyDown = (ev, value) => {
+    this.setState({ title: value });
+  };
+
   render() {
     return (
       <div className="App">
@@ -28,6 +32,7 @@ class App extends Component {
           multiLine={true}
           onChange={this.handleChange}
           caretPosition="end"
+          onKeyDown={this.handleKeyDown}
         />
 
         <b>Value:</b>
