@@ -197,53 +197,17 @@ describe('Sanitisation', () => {
         '\u200b',
         '\u2028',
         '\u2029',
+        '\u202e',
+        '\u202f',
         '\u3000',
       ].join('');
 
-      wrapper.instance()._element.innerText = `foo${unicodeChars}bar`;
+      wrapper.instance()._element.innerText = `foo ${unicodeChars}bar`;
       focusThenBlur(wrapper);
       expect(wrapper.state('value')).toEqual('foo bar');
     });
 
     xdescribe('Failing tests to fix in component', () => {
-      // @todo @fixme: This test should probably be fixed and merged into the previous test: 'replaces unicode spaces when props.multiLine'
-      it('replaces unicode spaces', () => {
-        const mockHandler = jest.fn();
-        const wrapper = mount(<ContentEditable multiLine content="foo" onChange={mockHandler} />);
-        const unicodeChars = [
-          '\u200c',
-          '\u200d',
-          '\u200e',
-          '\u200f',
-          '\u202a',
-          '\u202b',
-          '\u202c',
-          '\u202d',
-          '\u202e',
-          '\u202f',
-          '\u2060',
-          '\u2061',
-          '\u2062',
-          '\u2063',
-          '\u2064',
-          '\u2065',
-          '\u2066',
-          '\u2067',
-          '\u2068',
-          '\u2069',
-          '\u206a',
-          '\u206b',
-          '\u206c',
-          '\u206d',
-          '\u206e',
-          '\u206f',
-        ].join('');
-
-        wrapper.instance()._element.innerText = `foo${unicodeChars}bar`;
-        focusThenBlur(wrapper);
-        expect(wrapper.state('value')).toEqual('foo bar');
-      });
-
       // @todo @fixme: Component should probably be fixed so that this test passes,  given that it uses dangerouslySetInnerHTML
       // the naming of props.sanitise suggests that it will protect against this.
       it('protects against XSS input', () => {
