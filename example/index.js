@@ -19,6 +19,7 @@ class App extends Component {
     return (
       <div className="App">
         <ContentEditable
+          focus
           tagName="h1"
           className="my-class"
           content={this.state.title}
@@ -26,6 +27,7 @@ class App extends Component {
           maxLength={140}
           multiLine={true}
           onChange={this.handleChange}
+          caretPosition="end"
         />
 
         <b>Value:</b>
