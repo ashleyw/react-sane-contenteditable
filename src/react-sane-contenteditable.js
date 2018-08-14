@@ -65,7 +65,7 @@ class ContentEditable extends Component {
     if (multiLine) {
       // replace any 2+ character whitespace (other than new lines) with a single space
       value = value.replace(
-        /[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g,
+        /[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]+/g,
         " "
       );
     } else {
