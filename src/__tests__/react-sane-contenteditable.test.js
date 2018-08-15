@@ -21,7 +21,11 @@ global.document.createRange = jest.fn(() => ({
 }));
 
 // Helpers
-const focusThenBlur = (wrapper, element = 'div') => wrapper.find(element).simulate('focus').simulate('blur');
+const focusThenBlur = (wrapper, element = 'div') =>
+  wrapper
+    .find(element)
+    .simulate('focus')
+    .simulate('blur');
 
 // Styled components
 const Wrapper = styled.div``;
@@ -89,16 +93,14 @@ describe('Handles props', () => {
     expect(wrapper.prop('innerRef')).toEqual(expect.any(Function));
   });
 
-  it('props.content change calls setState and forceUpdate', () => {
+  it('props.content change calls setState', () => {
     const wrapper = mount(<ContentEditable content="" />);
     const instance = wrapper.instance();
     jest.spyOn(instance, 'setState');
-    jest.spyOn(instance, 'forceUpdate');
 
     wrapper.setProps({ content: 'foo' });
 
     expect(instance.setState).toHaveBeenCalled();
-    expect(instance.forceUpdate).toHaveBeenCalled();
   });
 
   it('props.focus sets focus on update', () => {
@@ -272,7 +274,7 @@ describe('Sanitisation', () => {
         const content = 'foo';
         const wrapper = mount(<ContentEditable content={content} onChange={mockHandler} />);
 
-        wrapper.instance()._element.innerText = 'foo <script>console.log(\'XSS vulnerability\')</script>';
+        wrapper.instance()._element.innerText = "foo <script>console.log('XSS vulnerability')</script>";
         focusThenBlur(wrapper);
         expect(wrapper.state('value')).toEqual(content);
       });
@@ -294,9 +296,11 @@ describe('Calls handlers', () => {
 
     wrapper.instance()._element.innerText = content;
     focusThenBlur(wrapper);
-    expect(mockHandler).toHaveBeenCalledWith(expect.objectContaining({
-      type: 'blur',
-    }));
+    expect(mockHandler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'blur',
+      }),
+    );
   });
 
   it('props.onChange called', () => {
@@ -367,9 +371,11 @@ describe('Calls handlers', () => {
     mockGetClipboardData.mockReturnValue(nextInput);
     wrapper.instance()._element.innerText = nextInput;
     wrapper.find('div').simulate('paste', { clipboardData: { getData: mockGetClipboardData } });
-    expect(mockOnPaste).toHaveBeenCalledWith(expect.objectContaining({
-      type: 'paste',
-      nativeEvent: expect.any(Object),
-    }));
+    expect(mockOnPaste).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'paste',
+        nativeEvent: expect.any(Object),
+      }),
+    );
   });
 });
