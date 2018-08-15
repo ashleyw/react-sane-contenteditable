@@ -95,14 +95,13 @@ class ContentEditable extends Component {
     }
 
     // replace encoded spaces
-    let value = val.replace(/&nbsp;/g, " ");
+    let value = val
+      .replace(/&nbsp;/, " ")
+      .replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]/g, " ");
 
     if (multiLine) {
       // replace any 2+ character whitespace (other than new lines) with a single space
-      value = value.replace(
-        /[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]+/g,
-        " "
-      );
+      value = value.replace(/[\t\v\f\r ]+/g, ' ');
     } else {
       value = value.replace(/\s+/g, " ");
     }
