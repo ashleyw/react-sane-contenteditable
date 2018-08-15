@@ -9,6 +9,7 @@
   },
   "author": "Ashley Williams <hi@ashleyw.co.uk>",
   "contributors": [
+    "Nick Aspinall",
     "Raphael Silva Cavalcanti",
     "Jess Telford"
   ],
@@ -31,15 +32,9 @@
     "babel-jest": "^23.4.2",
     "enzyme": "^3.4.0",
     "enzyme-adapter-react-16": "^1.2.0",
-    "eslint": "^5.3.0",
-    "eslint-config-airbnb": "^17.0.0",
-    "eslint-plugin-babel": "^5.1.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-jest": "^21.18.0",
-    "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-react": "^7.10.0",
     "jest": "^23.4.2",
     "jsdom": "^11.12.0",
+    "prettier": "1.14.2",
     "react-dom": "^16.3.2",
     "rollup": "^0.58.2",
     "rollup-plugin-babel": "^4.0.0-beta.8",
@@ -56,7 +51,7 @@
     "demo": "./node_modules/rollup/bin/rollup --config example/rollup.config.js",
     "dev": "yarn run demo -w",
     "test": "jest --watch",
-    "lint": "./node_modules/.bin/eslint src/*.js"
+    "lint": "./node_modules/prettier/bin-prettier.js --write src/**/*"
   },
   "bugs": {
     "url": "https://github.com/ashleyw/react-sane-contenteditable/issues"
