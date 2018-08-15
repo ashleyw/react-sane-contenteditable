@@ -9,7 +9,7 @@ const propTypes = {
   maxLength: PropTypes.number,
   multiLine: PropTypes.bool,
   sanitise: PropTypes.bool,
-  caretPosition: PropTypes.oneOf(["start", "end"]),
+  caretPosition: PropTypes.oneOf(['start', 'end']),
   tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]), // The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
@@ -76,7 +76,7 @@ class ContentEditable extends Component {
     const { caretPosition } = this.props;
 
     if (caretPosition && this._element) {
-      const offset = caretPosition === "end" ? 1 : 0;
+      const offset = caretPosition === 'end' ? 1 : 0;
       const range = document.createRange();
       const selection = window.getSelection();
       range.setStart(this._element, offset);
@@ -95,21 +95,11 @@ class ContentEditable extends Component {
     }
 
     // replace encoded spaces
-<<<<<<< HEAD
-    let value = val
-      .replace(/&nbsp;/, " ")
-      .replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]/g, " ");
+    let value = val.replace(/&nbsp;/, ' ').replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]/g, ' ');
 
     if (multiLine) {
       // replace any 2+ character whitespace (other than new lines) with a single space
-      value = value.replace(/[\t\v\f\r ]+/g, " ");
-=======
-    let value = val.replace(/&nbsp;/g, ' ');
-
-    if (multiLine) {
-      // replace any 2+ character whitespace (other than new lines) with a single space
-      value = value.replace(/[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]+/g, ' ');
->>>>>>> Add Prettier config
+      value = value.replace(/[\t\v\f\r ]+/g, ' ');
     } else {
       value = value.replace(/\s+/g, ' ');
     }

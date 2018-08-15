@@ -1,13 +1,13 @@
-import ReactDOM from "react-dom";
-import React, { Component } from "react";
-import ContentEditable from "../src/react-sane-contenteditable";
+import ReactDOM from 'react-dom';
+import React, { Component } from 'react';
+import ContentEditable from '../src/react-sane-contenteditable';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      title: "Title here"
+      title: 'Title here',
     };
   }
 
@@ -31,6 +31,7 @@ class App extends Component {
           maxLength={140}
           multiLine={true}
           onChange={this.handleChange}
+          onKeyDown={this.handleKeyDown}
           caretPosition="end"
           onKeyDown={this.handleKeyDown}
         />
@@ -39,8 +40,7 @@ class App extends Component {
         <pre
           style={{
             fontSize: 14,
-            fontFamily:
-              "'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace"
+            fontFamily: "'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace",
           }}
         >
           {this.state.title}
@@ -50,4 +50,4 @@ class App extends Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
