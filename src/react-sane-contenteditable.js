@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { omit, isEqual, pick, without } from "lodash";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { omit, isEqual, pick, without } from 'lodash';
 
 const propTypes = {
   content: PropTypes.string,
@@ -9,31 +9,31 @@ const propTypes = {
   maxLength: PropTypes.number,
   multiLine: PropTypes.bool,
   sanitise: PropTypes.bool,
-  caretPosition: PropTypes.oneOf(["start", "end"]),
+  caretPosition: PropTypes.oneOf(['start', 'end']),
   tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]), // The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
   onPaste: PropTypes.func,
   onChange: PropTypes.func,
-  styled: PropTypes.bool // If element is a styled component (uses innerRef instead of ref)
+  styled: PropTypes.bool, // If element is a styled component (uses innerRef instead of ref)
 };
 
 const defaultProps = {
-  content: "",
+  content: '',
   editable: true,
   focus: false,
   maxLength: Infinity,
   multiLine: false,
   sanitise: true,
   caretPosition: null,
-  tagName: "div",
+  tagName: 'div',
   innerRef: () => {},
   onBlur: () => {},
   onKeyDown: () => {},
   onPaste: () => {},
   onChange: () => {},
-  styled: false
+  styled: false,
 };
 
 class ContentEditable extends Component {
@@ -41,7 +41,7 @@ class ContentEditable extends Component {
     super(props);
 
     this.state = {
-      value: props.content
+      value: props.content,
     };
   }
 
@@ -52,12 +52,12 @@ class ContentEditable extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.content !== this.sanitiseValue(this.state.value)) {
-      this.setState({ value: nextProps.content }, this.forceUpdate);
+      this.setState({ value: nextProps.content });
     }
   }
 
   shouldComponentUpdate(nextProps) {
-    const propKeys = without(Object.keys(nextProps), "content");
+    const propKeys = without(Object.keys(nextProps), 'content');
     return !isEqual(pick(nextProps, propKeys), pick(this.props, propKeys));
   }
 
@@ -76,7 +76,7 @@ class ContentEditable extends Component {
     const { caretPosition } = this.props;
 
     if (caretPosition && this._element) {
-      const offset = caretPosition === "end" ? 1 : 0;
+      const offset = caretPosition === 'end' ? 1 : 0;
       const range = document.createRange();
       const selection = window.getSelection();
       range.setStart(this._element, offset);
@@ -95,22 +95,20 @@ class ContentEditable extends Component {
     }
 
     // replace encoded spaces
-    let value = val
-      .replace(/&nbsp;/, " ")
-      .replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]/g, " ");
+    let value = val.replace(/&nbsp;/, ' ').replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]/g, ' ');
 
     if (multiLine) {
       // replace any 2+ character whitespace (other than new lines) with a single space
-      value = value.replace(/[\t\v\f\r ]+/g, " ");
+      value = value.replace(/[\t\v\f\r ]+/g, ' ');
     } else {
-      value = value.replace(/\s+/g, " ");
+      value = value.replace(/\s+/g, ' ');
     }
 
     return value
-      .split("\n")
+      .split('\n')
       .map(line => line.trim())
-      .join("\n")
-      .replace(/\n{3,}/g, "\n\n") // replace 3+ line breaks with two
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n') // replace 3+ line breaks with two
       .trim()
       .substr(0, maxLength);
   }
@@ -131,8 +129,8 @@ class ContentEditable extends Component {
     const { maxLength } = this.props;
 
     ev.preventDefault();
-    const text = ev.clipboardData.getData("text").substr(0, maxLength);
-    document.execCommand("insertText", false, text);
+    const text = ev.clipboardData.getData('text').substr(0, maxLength);
+    document.execCommand('insertText', false, text);
 
     this.props.onPaste(ev);
   };
@@ -164,12 +162,7 @@ class ContentEditable extends Component {
     }
 
     // Ensure we don't exceed `maxLength` (keycode 8 === backspace)
-    if (
-      maxLength &&
-      !ev.metaKey &&
-      ev.which !== 8 &&
-      value.replace(/\s\s/g, " ").length >= maxLength
-    ) {
+    if (maxLength && !ev.metaKey && ev.which !== 8 && value.replace(/\s\s/g, ' ').length >= maxLength) {
       ev.preventDefault();
       // Call onKeyUp directly as ev.preventDefault() means that it will not be called
       this._onKeyUp(ev);
@@ -185,13 +178,7 @@ class ContentEditable extends Component {
   };
 
   render() {
-    const {
-      tagName: Element,
-      content,
-      editable,
-      styled,
-      ...props
-    } = this.props;
+    const { tagName: Element, content, editable, styled, ...props } = this.props;
 
     return (
       <Element
@@ -201,15 +188,15 @@ class ContentEditable extends Component {
               innerRef: c => {
                 this._element = c;
                 props.innerRef(c);
-              }
+              },
             }
           : {
               ref: c => {
                 this._element = c;
                 props.innerRef(c);
-              }
+              },
             })}
-        style={{ whiteSpace: "pre-wrap", ...props.style }}
+        style={{ whiteSpace: 'pre-wrap', ...props.style }}
         contentEditable={editable}
         key={Date()}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
