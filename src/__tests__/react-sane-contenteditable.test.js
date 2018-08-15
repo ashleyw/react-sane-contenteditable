@@ -224,20 +224,18 @@ describe('Sanitisation', () => {
       expect(wrapper.state('value')).toEqual('foo bar baz\nqux quux quuz');
     });
 
-    // @todo: ASCII spaces and feeds should probably be replaced regardless of multiLine
     it('replaces ASCII spaces and feeds', () => {
       const mockHandler = jest.fn();
       const wrapper = mount(<ContentEditable multiLine content="foo" onChange={mockHandler} />);
 
-      wrapper.instance()._element.innerText = `foo\f\f bar\r\r baz\t\t qux\v\v quux`;
+      wrapper.instance()._element.innerText = 'foo\f\f bar\r\r baz\t\t qux\v\v quux';
       focusThenBlur(wrapper);
       expect(wrapper.state('value')).toEqual('foo bar baz qux quux');
     });
 
-    // @todo: Unicode spaces should probably be replaced regardless of multiLine
     it('replaces unicode spaces', () => {
       const mockHandler = jest.fn();
-      const wrapper = mount(<ContentEditable multiLine content="foo" onChange={mockHandler} />);
+      const wrapper = mount(<ContentEditable content="foo" onChange={mockHandler} />);
       const unicodeChars = [
         '\u00a0',
         '\u2000',
