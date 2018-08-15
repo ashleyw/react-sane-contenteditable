@@ -23,6 +23,7 @@ class App extends Component {
     return (
       <div className="App">
         <ContentEditable
+          focus
           tagName="h1"
           className="my-class"
           content={this.state.title}
@@ -31,6 +32,7 @@ class App extends Component {
           multiLine={true}
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
+          caretPosition="end"
         />
 
         <b>Value:</b>

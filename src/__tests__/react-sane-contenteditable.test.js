@@ -1,9 +1,30 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
+import { JSDOM } from 'jsdom';
+import styled from 'styled-components';
+
+// SuT
 import ContentEditable from '../react-sane-contenteditable';
+
+// jsDOM
+const doc = new JSDOM('<!doctype html><html><body></body></html>');
+global.document = doc;
+global.window = doc.defaultView;
+global.window.getSelection = jest.fn(() => ({
+  addRange: jest.fn(),
+  removeAllRanges: jest.fn(),
+}));
+
+global.document.createRange = jest.fn(() => ({
+  collapse: jest.fn(),
+  setStart: jest.fn(),
+}));
 
 // Helpers
 const focusThenBlur = (wrapper, element = 'div') => wrapper.find(element).simulate('focus').simulate('blur');
+
+// Styled components
+const Wrapper = styled.div``;
 
 describe('Default behaviour', () => {
   it('renders a div by default', () => {
@@ -16,7 +37,7 @@ describe('Default behaviour', () => {
     expect(wrapper.key()).toEqual(Date());
   });
 
-  it('sets contenteditable', () => {
+  it('sets contentEditable', () => {
     const wrapper = shallow(<ContentEditable />);
     expect(wrapper.prop('contentEditable')).toBe(true);
   });
@@ -63,10 +84,46 @@ describe('Handles props', () => {
     expect(wrapper.prop('contentEditable')).toBe(false);
   });
 
-  // @todo: I think Enzyme converts props.ref to props.innerRef when props.styled={false}
   it('props.styled={true} sets innerRef handler', () => {
-    const wrapper = mount(<ContentEditable />);
+    const wrapper = mount(<ContentEditable styled tagName={Wrapper} />);
     expect(wrapper.prop('innerRef')).toEqual(expect.any(Function));
+  });
+
+  it('props.content change calls setState and forceUpdate', () => {
+    const wrapper = mount(<ContentEditable content="" />);
+    const instance = wrapper.instance();
+    jest.spyOn(instance, 'setState');
+    jest.spyOn(instance, 'forceUpdate');
+
+    wrapper.setProps({ content: 'foo' });
+
+    expect(instance.setState).toHaveBeenCalled();
+    expect(instance.forceUpdate).toHaveBeenCalled();
+  });
+
+  it('props.focus sets focus on update', () => {
+    const wrapper = mount(<ContentEditable />);
+    const instance = wrapper.instance();
+    jest.spyOn(instance, 'setFocus');
+
+    wrapper.setProps({ focus: true });
+
+    expect(instance.setFocus).toHaveBeenCalled();
+  });
+
+  it('props.caretPosition sets selection on mount', () => {
+    mount(<ContentEditable caretPosition="start" />);
+    expect(global.window.getSelection).toHaveBeenCalled();
+  });
+
+  it('props.caretPosition sets selection on update', () => {
+    const wrapper = mount(<ContentEditable />);
+    const instance = wrapper.instance();
+    jest.spyOn(instance, 'setCaret');
+
+    wrapper.setProps({ caretPosition: 'end' });
+
+    expect(instance.setCaret).toHaveBeenCalled();
   });
 
   it('shouldComponentUpdate returns false when props are the same', () => {
@@ -197,53 +254,17 @@ describe('Sanitisation', () => {
         '\u200b',
         '\u2028',
         '\u2029',
+        '\u202e',
+        '\u202f',
         '\u3000',
       ].join('');
 
-      wrapper.instance()._element.innerText = `foo${unicodeChars}bar`;
+      wrapper.instance()._element.innerText = `foo ${unicodeChars}bar`;
       focusThenBlur(wrapper);
       expect(wrapper.state('value')).toEqual('foo bar');
     });
 
     xdescribe('Failing tests to fix in component', () => {
-      // @todo @fixme: This test should probably be fixed and merged into the previous test: 'replaces unicode spaces when props.multiLine'
-      it('replaces unicode spaces', () => {
-        const mockHandler = jest.fn();
-        const wrapper = mount(<ContentEditable multiLine content="foo" onChange={mockHandler} />);
-        const unicodeChars = [
-          '\u200c',
-          '\u200d',
-          '\u200e',
-          '\u200f',
-          '\u202a',
-          '\u202b',
-          '\u202c',
-          '\u202d',
-          '\u202e',
-          '\u202f',
-          '\u2060',
-          '\u2061',
-          '\u2062',
-          '\u2063',
-          '\u2064',
-          '\u2065',
-          '\u2066',
-          '\u2067',
-          '\u2068',
-          '\u2069',
-          '\u206a',
-          '\u206b',
-          '\u206c',
-          '\u206d',
-          '\u206e',
-          '\u206f',
-        ].join('');
-
-        wrapper.instance()._element.innerText = `foo${unicodeChars}bar`;
-        focusThenBlur(wrapper);
-        expect(wrapper.state('value')).toEqual('foo bar');
-      });
-
       // @todo @fixme: Component should probably be fixed so that this test passes,  given that it uses dangerouslySetInnerHTML
       // the naming of props.sanitise suggests that it will protect against this.
       it('protects against XSS input', () => {
@@ -263,7 +284,6 @@ describe('Calls handlers', () => {
   it('props.innerRef called', () => {
     const mockHandler = jest.fn();
     const wrapper = mount(<ContentEditable innerRef={mockHandler} />);
-    wrapper.render();
     expect(mockHandler).toHaveBeenCalled();
   });
 
