@@ -5,9 +5,11 @@ import { omit, isEqual, pick, without } from "lodash";
 const propTypes = {
   content: PropTypes.string,
   editable: PropTypes.bool,
+  focus: PropTypes.bool,
   maxLength: PropTypes.number,
   multiLine: PropTypes.bool,
   sanitise: PropTypes.bool,
+  caretPosition: PropTypes.oneOf(['start', 'end']),
   tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]), // The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
@@ -20,9 +22,11 @@ const propTypes = {
 const defaultProps = {
   content: "",
   editable: true,
+  focus: false,
   maxLength: Infinity,
   multiLine: false,
   sanitise: true,
+  caretPosition: null,
   tagName: "div",
   innerRef: () => {},
   onBlur: () => {},
@@ -41,6 +45,11 @@ class ContentEditable extends Component {
     };
   }
 
+  componentDidMount() {
+    this.setFocus();
+    this.setCaret();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.content !== this.sanitiseValue(this.state.value)) {
       this.setState({ value: nextProps.content }, this.forceUpdate);
@@ -51,6 +60,32 @@ class ContentEditable extends Component {
     const propKeys = without(Object.keys(nextProps), "content");
     return !isEqual(pick(nextProps, propKeys), pick(this.props, propKeys));
   }
+
+  componentDidUpdate() {
+    this.setFocus();
+    this.setCaret();
+  }
+
+  setFocus = () => {
+    if (this.props.focus && this._element) {
+      this._element.focus();
+    }
+  };
+
+  setCaret = () => {
+    const { caretPosition } = this.props;
+
+    if (caretPosition && this._element) {
+      const offset = caretPosition === 'end' ? 1 : 0;
+      const range = document.createRange();
+      const selection = window.getSelection();
+      range.setStart(this._element, offset);
+      range.collapse(true);
+
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  };
 
   sanitiseValue(val) {
     const { maxLength, multiLine, sanitise } = this.props;
@@ -66,10 +101,7 @@ class ContentEditable extends Component {
 
     if (multiLine) {
       // replace any 2+ character whitespace (other than new lines) with a single space
-      value = value.replace(
-        /[\t\v\f\r ]+/g,
-        " "
-      );
+      value = value.replace(/[\t\v\f\r ]+/g, ' ');
     } else {
       value = value.replace(/\s+/g, " ");
     }
