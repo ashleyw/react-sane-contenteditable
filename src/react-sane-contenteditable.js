@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { omit, isEqual, pick, without } from 'lodash';
+
+const reduceTargetKeys = (target, keys, predicate) => Object.keys(target).reduce(predicate, {});
+
+const omit = (target = {}, keys = []) =>
+  reduceTargetKeys(target, keys, (acc, key) => keys.some(omitKey => omitKey === key) ? acc : { ...acc, [key]: target[key] });
+
+const pick = (target = {}, keys = []) =>
+  reduceTargetKeys(target, keys, (acc, key) => keys.some(pickKey => pickKey === key) ? { ...acc, [key]: target[key] } : acc);
+
+const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 const propTypes = {
   content: PropTypes.string,
@@ -57,7 +66,7 @@ class ContentEditable extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const propKeys = without(Object.keys(nextProps), 'content');
+    const propKeys = Object.keys(nextProps).filter(key => key !== 'content');
     return !isEqual(pick(nextProps, propKeys), pick(this.props, propKeys));
   }
 
