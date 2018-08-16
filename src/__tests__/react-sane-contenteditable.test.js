@@ -136,7 +136,9 @@ describe('Handles props', () => {
 
   it('shouldComponentUpdate returns true when props are different', () => {
     const wrapper = mount(<ContentEditable multiLine />);
-    const shouldUpdate = wrapper.instance().shouldComponentUpdate({ ...wrapper.props(), sanitise: false });
+    const shouldUpdate = wrapper
+      .instance()
+      .shouldComponentUpdate({ ...wrapper.props(), sanitise: false });
     expect(shouldUpdate).toBe(true);
   });
 
@@ -152,7 +154,9 @@ describe('Handles props', () => {
 describe('Sanitisation', () => {
   it('does not sanitise when props.sanitise={false}', () => {
     const mockHandler = jest.fn();
-    const wrapper = mount(<ContentEditable content="foo" onChange={mockHandler} sanitise={false} />);
+    const wrapper = mount(
+      <ContentEditable content="foo" onChange={mockHandler} sanitise={false} />,
+    );
     const nextInput = 'foo&nbsp;bar';
 
     wrapper.instance()._element.innerText = nextInput;
@@ -272,7 +276,8 @@ describe('Sanitisation', () => {
         const content = 'foo';
         const wrapper = mount(<ContentEditable content={content} onChange={mockHandler} />);
 
-        wrapper.instance()._element.innerText = "foo <script>console.log('XSS vulnerability')</script>";
+        wrapper.instance()._element.innerText =
+          "foo <script>console.log('XSS vulnerability')</script>";
         focusThenBlur(wrapper);
         expect(wrapper.state('value')).toEqual(content);
       });
