@@ -60,6 +60,6 @@ class App extends Component {
 `yarn run lint`
 
 ### Dev
-Runs the rollup dev server with file watching on both the src and demo
+Runs the webpack-dev-server with file watching on both the src and demo
 
 `yarn run dev`

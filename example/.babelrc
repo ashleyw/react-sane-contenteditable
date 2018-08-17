@@ -3,7 +3,6 @@
     [
       "@babel/preset-env",
       {
-        "modules": false,
         "targets": {
           "browsers": ["last 2 versions", "safari >= 7"]
         }
@@ -12,7 +11,6 @@
     "@babel/preset-react"
   ],
   "plugins": [
-    "@babel/plugin-external-helpers",
     "@babel/plugin-transform-spread",
     "@babel/plugin-proposal-class-properties"
   ]

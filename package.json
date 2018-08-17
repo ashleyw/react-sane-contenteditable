@@ -22,7 +22,6 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-rc.1",
     "@babel/core": "^7.0.0-rc.1",
-    "@babel/plugin-external-helpers": "^7.0.0-rc.1",
     "@babel/plugin-proposal-class-properties": "^7.0.0-rc.1",
     "@babel/plugin-transform-spread": "^7.0.0-rc.1",
     "@babel/preset-env": "^7.0.0-rc.1",
@@ -30,6 +29,7 @@
     "babel-core": "^7.0.0-0",
     "babel-eslint": "^8.2.6",
     "babel-jest": "^23.4.2",
+    "babel-loader": "^7.1.5",
     "enzyme": "^3.4.0",
     "enzyme-adapter-react-16": "^1.2.0",
     "jest": "^23.4.2",
@@ -43,12 +43,14 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-serve": "^0.4.2",
-    "styled-components": "^3.4.2"
+    "styled-components": "^3.4.2",
+    "webpack": "^4.16.5",
+    "webpack-dev-server": "^3.1.5"
   },
   "scripts": {
     "build": "./node_modules/.bin/babel src/react-sane-contenteditable.js --out-file lib/index.js",
     "prepublish": "yarn build",
-    "demo": "./node_modules/rollup/bin/rollup --config example/rollup.config.js",
+    "demo": "webpack-dev-server --config ./example/webpack.config.js --content-base example/ --port $PORT",
     "dev": "yarn run demo -w",
     "test": "jest --watch",
     "lint": "./node_modules/prettier/bin-prettier.js --write src/**/*"
