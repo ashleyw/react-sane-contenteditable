@@ -33,7 +33,6 @@ class App extends Component {
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
           caretPosition="end"
-          onKeyDown={this.handleKeyDown}
         />
 
         <b>Value:</b>
