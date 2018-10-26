@@ -88,6 +88,11 @@ describe('Handles props', () => {
     expect(wrapper.prop('contentEditable')).toBe(false);
   });
 
+  it('attributes and customProps are passed down', () => {
+    const wrapper = shallow(<ContentEditable foo="bar" />);
+    expect(wrapper.prop('foo')).toEqual('bar');
+  });
+
   it('props.styled={true} sets innerRef handler', () => {
     const wrapper = mount(<ContentEditable styled tagName={Wrapper} />);
     expect(wrapper.prop('innerRef')).toEqual(expect.any(Function));
@@ -129,17 +134,27 @@ describe('Handles props', () => {
   });
 
   it('shouldComponentUpdate returns false when props are the same', () => {
-    const wrapper = mount(<ContentEditable multiLine />);
-    const shouldUpdate = wrapper.instance().shouldComponentUpdate(wrapper.props());
-    expect(shouldUpdate).toBe(false);
+    const wrapper = mount(<ContentEditable multiLine foo={{}} innerRef={() => null} />);
+    const instance = wrapper.instance();
+    jest.spyOn(instance, 'shouldComponentUpdate');
+    wrapper.setProps({
+      multiLine: true,
+      foo: {},
+      innerRef: () => null,
+    });
+    wrapper.update();
+
+    expect(instance.shouldComponentUpdate).toHaveReturnedWith(false);
   });
 
   it('shouldComponentUpdate returns true when props are different', () => {
     const wrapper = mount(<ContentEditable multiLine />);
-    const shouldUpdate = wrapper
-      .instance()
-      .shouldComponentUpdate({ ...wrapper.props(), sanitise: false });
-    expect(shouldUpdate).toBe(true);
+    const instance = wrapper.instance();
+    jest.spyOn(instance, 'shouldComponentUpdate');
+    wrapper.setProps({ ...wrapper.props(), sanitise: false });
+    wrapper.update();
+
+    expect(instance.shouldComponentUpdate).toHaveReturnedWith(true);
   });
 
   xdescribe('Failing tests to fix in component', () => {
