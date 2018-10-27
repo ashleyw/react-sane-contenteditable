@@ -85,7 +85,8 @@ class ContentEditable extends Component {
     const { caretPosition } = this.props;
 
     if (caretPosition && this._element) {
-      const offset = caretPosition === 'end' ? 1 : 0;
+      const { value } = this.state;
+      const offset = value.length && caretPosition === 'end' ? 1 : 0;
       const range = document.createRange();
       const selection = window.getSelection();
       range.setStart(this._element, offset);
