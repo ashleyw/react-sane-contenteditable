@@ -1,15 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-const reduceTargetKeys = (target, keys, predicate) => Object.keys(target).reduce(predicate, {});
-
-const omit = (target = {}, keys = []) =>
-  reduceTargetKeys(target, keys, (acc, key) => keys.some(omitKey => omitKey === key) ? acc : { ...acc, [key]: target[key] });
-
-const pick = (target = {}, keys = []) =>
-  reduceTargetKeys(target, keys, (acc, key) => keys.some(pickKey => pickKey === key) ? { ...acc, [key]: target[key] } : acc);
-
-const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+import { isFunction, omit } from './utils';
 
 const propTypes = {
   content: PropTypes.string,
@@ -19,208 +11,278 @@ const propTypes = {
   multiLine: PropTypes.bool,
   sanitise: PropTypes.bool,
   caretPosition: PropTypes.oneOf(['start', 'end']),
-  tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]), // The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component
+  // The element to make contenteditable.
+  // Takes an element string ('div', 'span', 'h1') or a styled component
+  tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
+  onKeyUp: PropTypes.func,
   onPaste: PropTypes.func,
   onChange: PropTypes.func,
-  styled: PropTypes.bool, // If element is a styled component (uses innerRef instead of ref)
-};
-
-const defaultProps = {
-  content: '',
-  editable: true,
-  focus: false,
-  maxLength: Infinity,
-  multiLine: false,
-  sanitise: true,
-  caretPosition: null,
-  tagName: 'div',
-  innerRef: () => {},
-  onBlur: () => {},
-  onKeyDown: () => {},
-  onPaste: () => {},
-  onChange: () => {},
-  styled: false,
+  styled: PropTypes.bool,
 };
 
 class ContentEditable extends Component {
+  static propTypes = propTypes;
+
+  static defaultProps = {
+    content: '',
+    editable: true,
+    focus: false,
+    maxLength: Infinity,
+    multiLine: false,
+    sanitise: true,
+    caretPosition: null,
+    tagName: 'div',
+    innerRef: null,
+    onBlur: null,
+    onKeyDown: null,
+    onKeyUp: null,
+    onPaste: null,
+    onChange: null,
+    styled: false,
+  };
+
   constructor(props) {
     super();
 
     this.state = {
-      value: props.content,
+      caretPosition: this.getCaretPositionFromProps(props),
+      value: this.sanitiseValue(props.content, props),
     };
+
+    this.ref = null;
+    this.selection = document.getSelection();
   }
 
   componentDidMount() {
-    this.setFocus();
-    this.setCaret();
-  }
+    const { focus } = this.props;
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.content !== this.sanitiseValue(this.state.value)) {
-      this.setState({ value: nextProps.content });
+    if (focus && this.ref) {
+      this.setCaretPosition();
+      this.ref.focus();
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    const propKeys = Object.keys(nextProps).filter(key => key !== 'content');
-    return !isEqual(pick(nextProps, propKeys), pick(this.props, propKeys));
-  }
+  componentDidUpdate(prevProps, prevState) {
+    const { caretPosition, content, focus } = this.props;
+    const updateCaretPosition = prevProps.caretPosition !== caretPosition
+      || prevProps.focus !== focus;
+    const updateContent = prevProps.content !== content;
 
-  componentDidUpdate() {
-    this.setFocus();
-    this.setCaret();
-  }
-
-  setFocus = () => {
-    if (this.props.focus && this._element) {
-      this._element.focus();
+    if (updateCaretPosition || updateContent) {
+      this.setState({
+        caretPosition: updateCaretPosition
+          ? this.getCaretPositionFromProps() : prevState.caretPosition,
+        value: updateContent
+          ? this.sanitiseValue(content) : prevState.value,
+      }, () => {
+        this.setCaretPosition();
+      });
     }
+  }
+
+  getRange () {
+    return this.selection.rangeCount ? this.selection.getRangeAt(0) : document.createRange();
+  }
+
+  getCaret() {
+    const originalRange = this.getRange();
+    const range = originalRange.cloneRange();
+
+    range.selectNodeContents(this.ref);
+    range.setEnd(originalRange.endContainer, originalRange.endOffset);
+
+    return range.toString().length;
+  }
+
+  getSafeCaretPosition(position, nextValue) {
+    const { caretPosition, value } = this.state;
+
+    const val = nextValue || value;
+    let pos = position || caretPosition;
+
+    return Math.min(pos, val.length);
+  }
+
+  setCaretPosition() {
+    let range = this.getRange();
+
+    range.setStart(this.ref.childNodes[0] || this.ref, this.getSafeCaretPosition());
+    range.collapse();
+    this.selection.removeAllRanges();
+    this.selection.addRange(range);
+  }
+
+  getCaretPositionFromProps(props = this.props) {
+    const caretPosition = props.caretPosition === 'end' ? props.content.length : 0;
+
+    return props.focus ? caretPosition : null;
+  }
+
+  insertAtCaret = (prevValue, valueToInsert) => {
+    const { startOffset, endOffset } = this.getRange();
+
+    const prefix = prevValue.slice(0, startOffset);
+    const suffix = prevValue.slice(endOffset);
+
+    return [prefix, valueToInsert, suffix].join('')
   };
 
-  setCaret = () => {
-    const { caretPosition } = this.props;
-
-    if (caretPosition && this._element) {
-      const { value } = this.state;
-      const offset = value.length && caretPosition === 'end' ? 1 : 0;
-      const range = document.createRange();
-      const selection = window.getSelection();
-      range.setStart(this._element, offset);
-      range.collapse(true);
-
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-  };
-
-  sanitiseValue(val) {
-    const { maxLength, multiLine, sanitise } = this.props;
+  sanitiseValue(value, props = this.props) {
+    const { maxLength, multiLine, sanitise } = props;
 
     if (!sanitise) {
-      return val;
+      return value;
     }
 
-    // replace encoded spaces
-    let value = val.replace(/&nbsp;/, ' ').replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]/g, ' ');
+    if (isFunction(sanitise)) {
+      return sanitise(value, this.getRange());
+    }
+
+    let nextValue = value
+      // Normalise whitespace
+      .replace(/[ \u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]/g, ' ')
+      // Remove multiple whitespace chars and if not multiLine, remove lineBreaks
+      // FIXME This causes an issue when setting caret position
+      .replace(multiLine ? /[\t\v\f\r ]+/g : /\s+/g, ' ');
 
     if (multiLine) {
-      // replace any 2+ character whitespace (other than new lines) with a single space
-      value = value.replace(/[\t\v\f\r ]+/g, ' ');
-    } else {
-      value = value.replace(/\s+/g, ' ');
+      nextValue = nextValue
+        // Replace 3+ line breaks with two
+        // FIXME This causes an issue when setting caret position
+        .replace(/\r|\n{3,}/g, '\n\n')
+        // Remove leading & trailing whitespace
+        // FIXME This causes an issue when setting caret position
+        .split('\n').map(line => line.trim()).join('\n');
     }
 
-    return value
-      .split('\n')
-      .map(line => line.trim())
-      .join('\n')
-      .replace(/\n{3,}/g, '\n\n') // replace 3+ line breaks with two
-      .trim()
+    return nextValue
+      // Ensure maxLength not exceeded
       .substr(0, maxLength);
   }
 
-  _onChange = ev => {
-    const { sanitise } = this.props;
-    const rawValue = this._element.innerText;
-    const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
+  onBlur = (ev) => {
+    const { value } = this.state;
+    const { onBlur } = this.props;
 
-    if (this.state.value !== value) {
-      this.setState({ value: rawValue }, () => {
-        this.props.onChange(ev, value);
-      });
+    if (isFunction(onBlur)) {
+      onBlur(ev, value);
     }
   };
 
-  _onPaste = ev => {
+  onInput = (ev) => {
     const { maxLength } = this.props;
+    const { innerText } = ev.target;
 
-    ev.preventDefault();
-    const text = ev.clipboardData.getData('text').substr(0, maxLength);
-    document.execCommand('insertText', false, text);
+    if (innerText.length >= maxLength) {
+      return;
+    }
 
-    this.props.onPaste(ev);
-  };
+    this.setState({
+      caretPosition: this.getCaret(),
+      value: this.sanitiseValue(innerText),
+    }, () => {
+      const { onChange } = this.props;
 
-  _onBlur = ev => {
-    const { sanitise } = this.props;
-    const rawValue = this._element.innerText;
-    const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
+      if (isFunction(onChange)) {
+        const { value } = this.state;
 
-    // We finally set the state to the sanitised version (rather than the `rawValue`) because we're blurring the field.
-    this.setState({ value }, () => {
-      this.props.onChange(ev, value);
-      this.forceUpdate();
+        onChange(value);
+      }
     });
-
-    this.props.onBlur(ev);
   };
 
-  _onKeyDown = ev => {
-    const { maxLength, multiLine } = this.props;
-    const value = this._element.innerText;
+  onKeyDown = (ev) => {
+    const { innerText } = ev.target;
+    const { maxLength, multiLine, onKeyDown } = this.props;
+    let value = innerText;
 
-    // return key
-    if (!multiLine && ev.keyCode === 13) {
+    // Return key
+    if (ev.keyCode === 13) {
       ev.preventDefault();
-      ev.currentTarget.blur();
-      // Call onKeyUp directly as ev.preventDefault() means that it will not be called
-      this._onKeyUp(ev);
+
+      if (multiLine) {
+        const caretPosition = this.getCaret();
+        const hasLineBreak = /\r|\n/g.test(innerText.charAt(caretPosition));
+        const hasCharAfter = !!innerText.charAt(caretPosition);
+        value = this.insertAtCaret(innerText, hasLineBreak || hasCharAfter ? '\n' : '\n\n');
+
+        this.setState({
+          caretPosition: caretPosition + 1,
+          value,
+        });
+      } else {
+        ev.currentTarget.blur();
+      }
     }
 
     // Ensure we don't exceed `maxLength` (keycode 8 === backspace)
-    if (maxLength && !ev.metaKey && ev.which !== 8 && value.replace(/\s\s/g, ' ').length >= maxLength) {
+    if (maxLength && !ev.metaKey && ev.which !== 8 && innerText.length >= maxLength) {
       ev.preventDefault();
-      // Call onKeyUp directly as ev.preventDefault() means that it will not be called
-      this._onKeyUp(ev);
+    }
+
+    if (isFunction(onKeyDown)) {
+      onKeyDown(ev, value);
     }
   };
 
-  _onKeyUp = ev => {
-    // Call prop.onKeyDown callback from the onKeyUp event to mitigate both of these issues:
-    // Access to Synthetic event: https://github.com/ashleyw/react-sane-contenteditable/issues/14
-    // Current value onKeyDown: https://github.com/ashleyw/react-sane-contenteditable/pull/6
-    // this._onKeyDown can't be moved in it's entirety to onKeyUp as we lose the opportunity to preventDefault
-    this.props.onKeyDown(ev, this._element.innerText);
+  onKeyUp = (ev) => {
+    const { innerText } = ev.target;
+    const { onKeyUp } = this.props;
+
+    if (isFunction(onKeyUp)) {
+      onKeyUp(ev, innerText);
+    }
+  };
+
+  onPaste = ev => {
+    ev.preventDefault();
+
+    const pastedValue = ev.clipboardData.getData('text');
+    const value = this.insertAtCaret(this.ref.innerText, pastedValue);
+    const { startOffset } = this.getRange();
+
+    this.setState({
+      caretPosition: this.getSafeCaretPosition(startOffset + pastedValue.length, value),
+      value: this.sanitiseValue(value),
+    }, () => {
+      const { onPaste } = this.props;
+
+      if (isFunction(onPaste)) {
+        onPaste(value);
+      }
+    });
+  };
+
+  setRef = (ref) => {
+    const { innerRef } = this.props;
+    this.ref = ref;
+
+    if (isFunction(innerRef)) {
+      innerRef(ref);
+    }
   };
 
   render() {
-    const { tagName: Element, content, editable, styled, ...props } = this.props;
+    const { tagName: Element, editable, styled, ...props } = this.props;
 
     return (
       <Element
         {...omit(props, Object.keys(propTypes))}
-        {...(styled
-          ? {
-              innerRef: c => {
-                this._element = c;
-                props.innerRef(c);
-              },
-            }
-          : {
-              ref: c => {
-                this._element = c;
-                props.innerRef(c);
-              },
-            })}
+        {...(styled ? { innerRef: this.setRef } : { ref: this.setRef })}
         style={{ whiteSpace: 'pre-wrap', ...props.style }}
         contentEditable={editable}
-        key={Date()}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
-        onBlur={this._onBlur}
-        onInput={this._onChange}
-        onKeyDown={this._onKeyDown}
-        onKeyUp={this._onKeyUp}
-        onPaste={this._onPaste}
+        onBlur={this.onBlur}
+        onInput={this.onInput}
+        onKeyDown={this.onKeyDown}
+        onKeyUp={this.onKeyUp}
+        onPaste={this.onPaste}
       />
     );
   }
 }
-
-ContentEditable.propTypes = propTypes;
-ContentEditable.defaultProps = defaultProps;
 
 export default ContentEditable;
