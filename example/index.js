@@ -3,13 +3,9 @@ import React, { Component } from 'react';
 import ContentEditable from '../src/react-sane-contenteditable';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      title: 'Title here',
-    };
-  }
+  state = {
+    title: 'Title here',
+  };
 
   handleChange = (ev, value) => {
     this.setState({ title: value });

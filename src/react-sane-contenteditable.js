@@ -47,7 +47,7 @@ const defaultProps = {
 
 class ContentEditable extends Component {
   constructor(props) {
-    super(props);
+    super();
 
     this.state = {
       value: props.content,
