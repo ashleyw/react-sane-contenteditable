@@ -60,4 +60,6 @@ typings/
 # OS Specific
 .DS_Store
 
+# Dist
+dist
 example/index.min.js
