@@ -66,7 +66,7 @@ class ContentEditable extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const propKeys = Object.keys(nextProps).filter(key => key !== 'content');
+    const propKeys = Object.keys(nextProps).filter(key => key === 'content');
     return !isEqual(pick(nextProps, propKeys), pick(this.props, propKeys));
   }
 
