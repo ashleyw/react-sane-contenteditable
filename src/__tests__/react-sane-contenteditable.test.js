@@ -118,6 +118,24 @@ describe('Handles props', () => {
     expect(instance.setFocus).toHaveBeenCalled();
   });
 
+  it('state.isFocused is true onFocus', () => {
+      const wrapper = mount(<ContentEditable />);
+
+      wrapper.simulate('focus');
+
+      expect(wrapper.state('isFocused')).toEqual(true);
+  });
+
+  it('state.isFocused is false onBlur', () => {
+      const wrapper = mount(<ContentEditable />);
+
+      wrapper.instance()._element.innerText = 'foo bar';
+      wrapper.find('div').simulate('input');
+      wrapper.simulate('blur');
+
+      expect(wrapper.state('isFocused')).toEqual(false);
+  });
+
   it('props.caretPosition sets selection on mount', () => {
     mount(<ContentEditable caretPosition="start" />);
     expect(global.window.getSelection).toHaveBeenCalled();

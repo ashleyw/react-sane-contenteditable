@@ -22,6 +22,7 @@ const propTypes = {
   tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]), // The element to make contenteditable. Takes an element string ('div', 'span', 'h1') or a styled component
   innerRef: PropTypes.func,
   onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,
   onPaste: PropTypes.func,
   onChange: PropTypes.func,
@@ -39,6 +40,7 @@ const defaultProps = {
   tagName: 'div',
   innerRef: () => {},
   onBlur: () => {},
+  onFocus: () => {},
   onKeyDown: () => {},
   onPaste: () => {},
   onChange: () => {},
@@ -51,6 +53,7 @@ class ContentEditable extends Component {
 
     this.state = {
       value: props.content,
+      isFocused: false,
     };
   }
 
@@ -61,12 +64,14 @@ class ContentEditable extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.content !== this.sanitiseValue(this.state.value)) {
-      this.setState({ value: nextProps.content });
+      this.setState({ value: nextProps.content }, () => {
+        if (!this.state.isFocused) this.forceUpdate();
+      });
     }
   }
 
   shouldComponentUpdate(nextProps) {
-    const propKeys = Object.keys(nextProps).filter(key => key === 'content');
+    const propKeys = Object.keys(nextProps).filter(key => key !== 'content');
     return !isEqual(pick(nextProps, propKeys), pick(this.props, propKeys));
   }
 
@@ -151,12 +156,22 @@ class ContentEditable extends Component {
     const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
 
     // We finally set the state to the sanitised version (rather than the `rawValue`) because we're blurring the field.
-    this.setState({ value }, () => {
+    this.setState({
+        value,
+        isFocused: false,
+    }, () => {
       this.props.onChange(ev, value);
       this.forceUpdate();
     });
 
     this.props.onBlur(ev);
+  };
+
+  _onFocus = ev => {
+    this.setState({
+        isFocused: true,
+    });
+    this.props.onFocus(ev);
   };
 
   _onKeyDown = ev => {
@@ -211,6 +226,7 @@ class ContentEditable extends Component {
         key={Date()}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
         onBlur={this._onBlur}
+        onFocus={this._onFocus}
         onInput={this._onChange}
         onKeyDown={this._onKeyDown}
         onKeyUp={this._onKeyUp}
