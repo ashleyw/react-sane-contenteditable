@@ -119,21 +119,21 @@ describe('Handles props', () => {
   });
 
   it('state.isFocused is true onFocus', () => {
-      const wrapper = mount(<ContentEditable />);
+    const wrapper = mount(<ContentEditable />);
 
-      wrapper.simulate('focus');
+    wrapper.simulate('focus');
 
-      expect(wrapper.state('isFocused')).toEqual(true);
+    expect(wrapper.state('isFocused')).toEqual(true);
   });
 
   it('state.isFocused is false onBlur', () => {
-      const wrapper = mount(<ContentEditable />);
+    const wrapper = mount(<ContentEditable />);
 
-      wrapper.instance()._element.innerText = 'foo bar';
-      wrapper.find('div').simulate('input');
-      wrapper.simulate('blur');
+    wrapper.instance()._element.innerText = 'foo bar';
+    wrapper.find('div').simulate('input');
+    wrapper.simulate('blur');
 
-      expect(wrapper.state('isFocused')).toEqual(false);
+    expect(wrapper.state('isFocused')).toEqual(false);
   });
 
   it('props.caretPosition sets selection on mount', () => {
