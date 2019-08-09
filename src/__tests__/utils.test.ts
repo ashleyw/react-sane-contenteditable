@@ -36,8 +36,4 @@ describe('omit', () => {
 
     expect(omit(target)).toEqual(target);
   });
-
-  it('returns empty object literal when both arguments are missing', () => {
-    expect(omit()).toEqual({});
-  });
 });

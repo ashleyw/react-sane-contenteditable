@@ -1,9 +1,10 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
-import { uglify } from 'rollup-plugin-uglify';
 import { sizeSnapshot } from 'rollup-plugin-size-snapshot';
+import typescript from 'rollup-plugin-typescript2';
+import { uglify } from 'rollup-plugin-uglify';
 
 import common from './rollup.config.common';
 
@@ -20,8 +21,9 @@ export default [
     },
     external,
     plugins: [
-      resolve(),
+      resolve(common.plugins.resolve),
       commonjs(common.plugins.commonJs),
+      typescript(common.plugins.typescript),
       babel(common.plugins.babel),
       replace({
         'process.env.NODE_ENV': JSON.stringify('development'),
@@ -39,8 +41,9 @@ export default [
     },
     external,
     plugins: [
-      resolve(),
+      resolve(common.plugins.resolve),
       commonjs(common.plugins.commonJs),
+      typescript(common.plugins.typescript),
       babel(common.plugins.babel),
       replace({
         'process.env.NODE_ENV': JSON.stringify('production'),
@@ -57,9 +60,6 @@ export default [
       name: common.output.name,
     },
     external: id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/'),
-    plugins: [
-      babel(common.plugins.babel),
-      sizeSnapshot(),
-    ],
+    plugins: [typescript(common.plugins.typescript), babel(common.plugins.babel), sizeSnapshot()],
   },
 ];

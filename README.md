@@ -16,20 +16,16 @@ ContentEditable has some well known issues, and the purpose of this component is
 
 ## Example
 
-```jsx
+```tsx
 import React, { Component } from "react";
 import ContentEditable from "react-sane-contenteditable";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      title: "Title here"
-    };
+  state = {
+    title: "Title here"
   }
 
-  handleChange = (ev, value) => {
+  handleChange = (value: string) => {
     this.setState({ title: value });
   };
 
@@ -38,12 +34,11 @@ class App extends Component {
       <div className="App">
         <ContentEditable
           tagName="h1"
-          className="my-class"
           content={this.state.title}
+          onChange={this.handleChange}
           editable={true}
           maxLength={140}
           multiLine={false}
-          onChange={this.handleChange}
         />
       </div>
     );

@@ -63,3 +63,6 @@ typings/
 # Dist
 dist
 example/index.min.js
+
+# Rollup typescript cache directory
+.rpt2_cache

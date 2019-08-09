@@ -1,5 +1,6 @@
-import ReactDOM from 'react-dom';
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+
 import ContentEditable from '../src/react-sane-contenteditable';
 
 class App extends Component {
@@ -7,16 +8,20 @@ class App extends Component {
     title: 'foo',
   };
 
-  handleChange = (value) => {
+  handleChange = (value: string) => {
     console.log('change', value);
     this.setState({ title: value });
   };
 
-  handlePaste = (value) => console.log('paste', value);
+  handlePaste = (value: string) => console.log('paste', value);
 
-  handleEvent = (ev, value) => {
-    ev.persist();
-    console.log(ev.type, ev, value);
+  handleEvent = (event: React.KeyboardEvent, value: string) => {
+    event.persist();
+    console.log(event.type, event, value);
+  };
+
+  handleBlur = (event: React.FormEvent<HTMLInputElement>, value: string) => {
+    console.log('input blurred', event);
   };
 
   render() {
@@ -28,9 +33,9 @@ class App extends Component {
           content={this.state.title}
           editable
           focus
-          maxLength={140}
+          maxLength={50}
           multiLine
-          onBlur={this.handleEvent}
+          onBlur={this.handleBlur}
           onChange={this.handleChange}
           onKeyDown={this.handleEvent}
           onKeyUp={this.handleEvent}
@@ -42,7 +47,7 @@ class App extends Component {
         <pre
           style={{
             fontSize: 14,
-            fontFamily: '\'Courier New\', Courier, \'Lucida Sans Typewriter\', \'Lucida Typewriter\', monospace',
+            fontFamily: "'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace",
           }}
         >
           {this.state.title}
