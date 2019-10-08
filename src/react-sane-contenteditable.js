@@ -4,10 +4,18 @@ import PropTypes from 'prop-types';
 const reduceTargetKeys = (target, keys, predicate) => Object.keys(target).reduce(predicate, {});
 
 const omit = (target = {}, keys = []) =>
-  reduceTargetKeys(target, keys, (acc, key) => keys.some(omitKey => omitKey === key) ? acc : { ...acc, [key]: target[key] });
+  reduceTargetKeys(
+    target,
+    keys,
+    (acc, key) => (keys.some(omitKey => omitKey === key) ? acc : { ...acc, [key]: target[key] }),
+  );
 
 const pick = (target = {}, keys = []) =>
-  reduceTargetKeys(target, keys, (acc, key) => keys.some(pickKey => pickKey === key) ? { ...acc, [key]: target[key] } : acc);
+  reduceTargetKeys(
+    target,
+    keys,
+    (acc, key) => (keys.some(pickKey => pickKey === key) ? { ...acc, [key]: target[key] } : acc),
+  );
 
 const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -59,7 +67,7 @@ class ContentEditable extends Component {
     this.setCaret();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.content !== this.sanitiseValue(this.state.value)) {
       this.setState({ value: nextProps.content });
     }
@@ -105,7 +113,9 @@ class ContentEditable extends Component {
     }
 
     // replace encoded spaces
-    let value = val.replace(/&nbsp;/, ' ').replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]/g, ' ');
+    let value = val
+      .replace(/&nbsp;/, ' ')
+      .replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u202e-\u202f\u3000]/g, ' ');
 
     if (multiLine) {
       // replace any 2+ character whitespace (other than new lines) with a single space
@@ -172,7 +182,12 @@ class ContentEditable extends Component {
     }
 
     // Ensure we don't exceed `maxLength` (keycode 8 === backspace)
-    if (maxLength && !ev.metaKey && ev.which !== 8 && value.replace(/\s\s/g, ' ').length >= maxLength) {
+    if (
+      maxLength &&
+      !ev.metaKey &&
+      ev.which !== 8 &&
+      value.replace(/\s\s/g, ' ').length >= maxLength
+    ) {
       ev.preventDefault();
       // Call onKeyUp directly as ev.preventDefault() means that it will not be called
       this._onKeyUp(ev);
