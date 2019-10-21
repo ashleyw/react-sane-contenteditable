@@ -1,0 +1,7 @@
+**/*.json
+*.yml
+*.yaml
+*.md
+**/build/*
+**/node_modules/*
+**/bundle.js

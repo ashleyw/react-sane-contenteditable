@@ -1,0 +1,102 @@
+{
+  "root": true,
+  "env": {
+    "commonjs": true,
+    "es6": true,
+    "jest": true,
+    "node": true
+  },
+  "extends": [
+    "plugin:unicorn/recommended",
+    "prettier",
+    "prettier/@typescript-eslint",
+    "prettier/react",
+    "prettier/unicorn"
+  ],
+  "overrides": [
+    {
+      "files": ["**/__tests__/**", "**/__stories__/**", "**/*.js"],
+      "rules": {
+        "import/no-nodejs-modules": "off",
+        "import/no-commonjs": "off",
+        "no-console": "off"
+      }
+    }
+    {
+      "files": ["*.js"],
+      "rules": {
+        "import/no-default-export": "off"
+      }
+    }
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "jsx": true,
+    "sourceType": "module",
+    "useJSXTextNode": true
+  },
+  "plugins": ["@typescript-eslint", "import", "react", "prettier", "unicorn"],
+  "rules": {
+    "@typescript-eslint/array-type": ["error", "array-simple"],
+    "@typescript-eslint/camelcase": [
+      "error",
+      {
+        "ignoreDestructuring": true
+      }
+    ],
+    "@typescript-eslint/class-name-casing": "error",
+    "@typescript-eslint/no-angle-bracket-type-assertion": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "args": "none",
+        "ignoreRestSiblings": false,
+        "vars": "all",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "camelcase": "off",
+    "curly": "warn",
+    "eqeqeq": "error",
+    "no-fallthrough": "error",
+    "func-style": ["warn", "declaration"],
+    "import/no-amd": "warn",
+    "import/no-commonjs": "warn",
+    "import/no-cycle": "error",
+    "import/no-default-export": "warn",
+    "import/no-extraneous-dependencies": ["error"],
+    "import/no-self-import": "error",
+    "linebreak-style": ["error", "unix"],
+    "no-await-in-loop": "warn",
+    "no-cond-assign": "error",
+    "no-console": "warn",
+    "no-duplicate-imports": "error",
+    "no-empty": "error",
+    "no-return-assign": "error",
+    "no-return-await": "error",
+    "no-shadow": "error",
+    "no-shadow-restricted-names": "error",
+    "no-sync": "warn",
+    "no-template-curly-in-string": "error",
+    "no-throw-literal": "error",
+    "no-unmodified-loop-condition": "error",
+    "no-unused-expressions": "error",
+    "no-unused-vars": "off",
+    "no-useless-catch": "error",
+    "no-useless-concat": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-rest-params": "warn",
+    "prefer-spread": "error",
+    "prefer-template": "error",
+    "prettier/prettier": "warn",
+    "radix": "error",
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "unicorn/catch-error-name": "off",
+    "unicorn/filename-case": "off",
+    "unicorn/no-abusive-eslint-disable": "off",
+    "unicorn/prevent-abbreviations": "off",
+    "valid-typeof": "error"
+  }
+}
