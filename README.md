@@ -2,23 +2,21 @@
 
 [![npm version](https://badge.fury.io/js/react-sane-contenteditable.svg)](https://badge.fury.io/js/react-sane-contenteditable)
 
-React component with sane defaults to make any element contentEditable
+React component with sane defaults to make any element [`contentEditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content).
 
-## Why?
+## Installation
 
-ContentEditable has some well known issues, and the purpose of this component is to deal with them in a sane manner so we don't have to continue re-inventing the wheel! 🔥
+```bash
+yarn add react-sane-contenteditable # or `npm install react-sane-contenteditable`
+```
 
-* Clean and sanitise the output
-* Remove rich text formatting when pasting
-* Prevent the cursor from jumping around
-
-## Example
+## Usage
 
 ```tsx
 import React, { Component } from "react";
 import ContentEditable from "react-sane-contenteditable";
 
-class App extends Component {
+class Project extends Component {
   state = {
     title: "Title here"
   }
@@ -29,7 +27,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="project-title">
         <ContentEditable
           tagName="h1"
           content={this.state.title}
@@ -44,13 +42,23 @@ class App extends Component {
 }
 ```
 
-### Develop
+## Scripts
 
-### Tests
-`yarn test`
+| Command                | Description                                                               |
+| ---------------------- | ------------------------------------------------------------------------- |
+| `yarn storybook`       | Starts a Storybook server on [`localhost:6006`](http://localhost:6006)    |
+| `yarn test`            | Runs test suite using Jest                                                |
+| `yarn test:watch`      | Runs test suite using Jest in watch mode                                  |
+| `yarn lint:prettier`   | Runs Prettier                                                             |
+| `yarn lint:eslint`     | Runs ESLint                                                               |
+| `yarn lint`            | Runs both Prettier and ESlint                                             |
+| `yarn build`           | Builds project using Rollup                                               |
 
-### Linting
-`yarn run lint`
 
-### Storybook
-`yarn run storybook`
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)

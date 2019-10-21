@@ -35,17 +35,14 @@
     "build:clean": "rimraf dist/ && rimraf lib/",
     "build:esm": "cross-env BABEL_ENV=esm babel src --out-dir lib/esm --extensions .ts,.tsx,.js",
     "build:umd": "rollup -c && rimraf dist/index.esm.js",
-    "dev": "yarn run storybook",
-    "dev:test": "jest --watch --verbose false",
     "lint:prettier": "prettier --write src/**/*",
     "lint:eslint": "eslint --ext .ts,.tsx,.js --fix \"src/**/*.{ts,tsx,js,jsx}\"",
     "lint": "yarn run lint:prettier && yarn run lint:eslint",
     "prepublish": "yarn build",
     "test": "jest --json --outputFile=.jest-output.json",
-    "test:ci": "jest",
     "test:watch": "yarn test --watch --maxWorkers=1",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook --output-dir docs"
   },
   "husky": {
     "hooks": {

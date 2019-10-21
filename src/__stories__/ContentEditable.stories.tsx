@@ -20,7 +20,7 @@ stories.add('basic example', () => (
         content={state.content}
         editable
         focus
-        maxLength={10}
+        maxLength={140}
         multiLine
         onChange={content => store.set({ content })}
         onBlur={action('onBlur', { depth: 1 })}
