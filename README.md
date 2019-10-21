@@ -4,8 +4,6 @@
 
 React component with sane defaults to make any element contentEditable
 
-### **DEMO:** https://jsfiddle.net/zp2v824s/show
-
 ## Why?
 
 ContentEditable has some well known issues, and the purpose of this component is to deal with them in a sane manner so we don't have to continue re-inventing the wheel! 🔥
@@ -54,7 +52,5 @@ class App extends Component {
 ### Linting
 `yarn run lint`
 
-### Dev
-Runs the rollup dev server with file watching on both the src and demo
-
-`yarn run dev`
+### Storybook
+`yarn run storybook`

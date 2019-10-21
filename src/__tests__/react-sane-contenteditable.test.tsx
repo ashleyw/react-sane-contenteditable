@@ -3,7 +3,6 @@ const globalAny: any = global;
 import { mount } from 'enzyme';
 import { JSDOM } from 'jsdom';
 import React from 'react';
-import styled from 'styled-components';
 
 // SuT
 import ContentEditable from '../react-sane-contenteditable';
@@ -38,9 +37,6 @@ function focusThenBlur(wrapper, element = 'div') {
     .simulate('blur');
 }
 
-// Styled components
-const Wrapper = styled.div``;
-
 const props = { content: '', onChange: () => {} };
 
 describe('Default behaviour', () => {
@@ -69,6 +65,24 @@ describe('Default behaviour', () => {
 
     wrapper.childAt(0).simulate('input', { target: { innerText: nextInput } });
     expect(mockHandler).toHaveBeenCalledWith(nextInput);
+  });
+
+  it('onFocus sets state.isFocused', () => {
+    const wrapper = mount(<ContentEditable />);
+
+    wrapper.simulate('focus');
+
+    expect(wrapper.state('isFocused')).toEqual(true);
+  });
+
+  it('onBlur sets state.isFocused', () => {
+    const wrapper = mount(<ContentEditable />);
+
+    wrapper.simulate('focus');
+    expect(wrapper.state('isFocused')).toEqual(true);
+
+    wrapper.simulate('blur');
+    expect(wrapper.state('isFocused')).toEqual(false);
   });
 });
 
@@ -451,7 +465,11 @@ describe('Calls handlers', () => {
     }));
 
     wrapper.childAt(0).simulate('keydown', { keyCode: 13, target: { innerText: content } });
-    expect(wrapper.state()).toEqual({ caretPosition: caretPosition + 1, value: nextContent });
+    expect(wrapper.state()).toEqual({
+      caretPosition: caretPosition + 1,
+      isFocused: false,
+      value: nextContent,
+    });
   });
 
   it('onKeyDown (enter) handles caret with multiLine at end of value', () => {
@@ -470,7 +488,11 @@ describe('Calls handlers', () => {
     }));
 
     wrapper.childAt(0).simulate('keydown', { keyCode: 13, target: { innerText: content } });
-    expect(wrapper.state()).toEqual({ caretPosition: caretPosition + 1, value: nextContent });
+    expect(wrapper.state()).toEqual({
+      caretPosition: caretPosition + 1,
+      isFocused: false,
+      value: nextContent,
+    });
   });
 
   it('onKeyDown (enter) handles caret (at linebreak) with multiLine value', () => {
@@ -489,7 +511,11 @@ describe('Calls handlers', () => {
     }));
 
     wrapper.childAt(0).simulate('keydown', { keyCode: 13, target: { innerText: content } });
-    expect(wrapper.state()).toEqual({ caretPosition: caretPosition + 1, value: nextContent });
+    expect(wrapper.state()).toEqual({
+      caretPosition: caretPosition + 1,
+      isFocused: false,
+      value: nextContent,
+    });
   });
 
   it('onKeyDown (enter) triggers blur when props.multiLine = false', () => {

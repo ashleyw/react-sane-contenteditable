@@ -13,6 +13,7 @@ interface ContentEditableProps {
   onChange: (value: string) => void;
   focus?: boolean;
   onBlur?: (event: React.FormEvent<HTMLInputElement>, value: string) => void;
+  onFocus?: (event: React.FormEvent<HTMLInputElement>) => void;
   maxLength?: number;
   multiLine?: boolean;
   onKeyDown?: (event: React.KeyboardEvent, value: string) => void;
@@ -29,6 +30,7 @@ interface ContentEditableProps {
 interface ContentEditableState {
   value: string;
   caretPosition: number;
+  isFocused: boolean;
 }
 
 const propTypes = {
@@ -43,6 +45,7 @@ const propTypes = {
   // Takes an element string ('div', 'span', 'h1') or a styled component
   tagName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,
   onKeyUp: PropTypes.func,
   onPaste: PropTypes.func,
@@ -65,6 +68,7 @@ export default class ContentEditable extends Component<ContentEditableProps, Con
     caretPosition: null,
     tagName: 'div',
     onBlur: null,
+    onFocus: null,
     onKeyDown: null,
     onKeyUp: null,
     onPaste: null,
@@ -80,6 +84,7 @@ export default class ContentEditable extends Component<ContentEditableProps, Con
     this.state = {
       caretPosition: this.getCaretPositionFromProps(props),
       value: this.sanitiseValue(props.content, props),
+      isFocused: false,
     };
 
     this.ref = React.createRef();
@@ -200,8 +205,20 @@ export default class ContentEditable extends Component<ContentEditableProps, Con
     const { value } = this.state;
     const { onBlur } = this.props;
 
+    this.setState({ isFocused: false });
+
     if (isFunction(onBlur)) {
       onBlur(event, value);
+    }
+  };
+
+  onFocus = (event: React.FormEvent<HTMLInputElement>) => {
+    const { onFocus } = this.props;
+
+    this.setState({ isFocused: true });
+
+    if (isFunction(onFocus)) {
+      onFocus(event);
     }
   };
 
@@ -310,6 +327,7 @@ export default class ContentEditable extends Component<ContentEditableProps, Con
         contentEditable={editable}
         dangerouslySetInnerHTML={{ __html: this.state.value }}
         onBlur={this.onBlur}
+        onFocus={this.onFocus}
         onInput={this.onInput}
         onKeyDown={this.onKeyDown}
         onKeyUp={this.onKeyUp}

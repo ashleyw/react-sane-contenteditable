@@ -21,7 +21,7 @@
         "import/no-commonjs": "off",
         "no-console": "off"
       }
-    }
+    },
     {
       "files": ["*.js"],
       "rules": {

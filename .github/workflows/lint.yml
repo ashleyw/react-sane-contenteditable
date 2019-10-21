@@ -1,0 +1,27 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Install dependencies
+        run: yarn install
+        env:
+          CI: true
+
+      - name: Run prettier
+        run: yarn lint:prettier
+
+      - name: Run ESLint
+        run: yarn lint:eslint
+
+      - uses: stefanzweifel/git-auto-commit-action@v2.1.0
+        with:
+          commit_message: 'style: format with prettier'
+          branch: ${{ github.head_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
