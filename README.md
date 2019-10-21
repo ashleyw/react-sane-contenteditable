@@ -10,22 +10,22 @@ React component with sane defaults to make any element contentEditable
 
 ContentEditable has some well known issues, and the purpose of this component is to deal with them in a sane manner so we don't have to continue re-inventing the wheel! 🔥
 
-* Clean and sanitise the output
-* Remove rich text formatting when pasting
-* Prevent the cursor from jumping around
+- Clean and sanitise the output
+- Remove rich text formatting when pasting
+- Prevent the cursor from jumping around
 
 ## Example
 
 ```jsx
-import React, { Component } from "react";
-import ContentEditable from "react-sane-contenteditable";
+import React, { Component } from 'react';
+import ContentEditable from 'react-sane-contenteditable';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      title: "Title here"
+      title: 'Title here',
     };
   }
 
@@ -54,12 +54,15 @@ class App extends Component {
 ### Develop
 
 ### Tests
+
 `yarn test`
 
 ### Linting
+
 `yarn run lint`
 
 ### Dev
+
 Runs the rollup dev server with file watching on both the src and demo
 
 `yarn run dev`

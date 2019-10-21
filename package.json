@@ -2,19 +2,43 @@
   "name": "react-sane-contenteditable",
   "version": "1.6.0",
   "description": "React component with sane defaults to make any element contentEditable",
-  "main": "lib/cjs/react-sane-contenteditable.js",
-  "module": "lib/esm/react-sane-contenteditable.js",
+  "keywords": ["content-editable", "contenteditable", "editable", "react", "react-component"],
+  "homepage": "https://github.com/ashleyw/react-sane-contenteditable#readme",
+  "bugs": {
+    "url": "https://github.com/ashleyw/react-sane-contenteditable/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ashleyw/react-sane-contenteditable.git"
   },
-  "author": "Ashley Williams <hi@ashleyw.co.uk>",
-  "contributors": [
-    "Nick Aspinall",
-    "Raphael Silva Cavalcanti",
-    "Jess Telford"
-  ],
   "license": "MIT",
+  "author": "Ashley Williams <hi@ashleyw.co.uk>",
+  "contributors": ["Nick Aspinall", "Raphael Silva Cavalcanti", "Jess Telford"],
+  "main": "lib/cjs/react-sane-contenteditable.js",
+  "module": "lib/esm/react-sane-contenteditable.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "yarn run build:clean && yarn run build:esm && yarn run build:cjs && yarn run build:umd",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir lib/cjs",
+    "build:clean": "rimraf dist/ && rimraf lib/",
+    "build:esm": "cross-env BABEL_ENV=esm babel src --out-dir lib/esm",
+    "build:umd": "rollup -c && rimraf dist/index.esm.js",
+    "demo": "rollup -c rollup.config.demo.js",
+    "dev": "yarn run demo -w",
+    "dev:test": "jest --watch --verbose false",
+    "lint": "yarn run lint:prettier",
+    "lint:prettier": "prettier --write src/**/*",
+    "prepublish": "yarn build",
+    "test": "jest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run lint && yarn run build && git add lib/* .size-snapshot.json",
+      "pre-push": "yarn test"
+    }
+  },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
     "prop-types": "^15.6.2"
@@ -55,38 +79,5 @@
   },
   "peerDependencies": {
     "react": "^16.4.2"
-  },
-  "scripts": {
-    "build": "yarn run build:clean && yarn run build:esm && yarn run build:cjs && yarn run build:umd",
-    "build:clean": "rimraf dist/ && rimraf lib/",
-    "build:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir lib/cjs",
-    "build:esm": "cross-env BABEL_ENV=esm babel src --out-dir lib/esm",
-    "build:umd": "rollup -c && rimraf dist/index.esm.js",
-    "prepublish": "yarn build",
-    "demo": "rollup -c rollup.config.demo.js",
-    "dev": "yarn run demo -w",
-    "dev:test": "jest --watch --verbose false",
-    "test": "jest",
-    "lint": "./node_modules/prettier/bin-prettier.js --write src/**/*"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn run lint && yarn run build && git add lib/* .size-snapshot.json",
-      "pre-push": "yarn test"
-    }
-  },
-  "bugs": {
-    "url": "https://github.com/ashleyw/react-sane-contenteditable/issues"
-  },
-  "homepage": "https://github.com/ashleyw/react-sane-contenteditable#readme",
-  "directories": {
-    "lib": "lib"
-  },
-  "keywords": [
-    "react-component",
-    "contenteditable",
-    "editable",
-    "react",
-    "content-editable"
-  ]
+  }
 }
