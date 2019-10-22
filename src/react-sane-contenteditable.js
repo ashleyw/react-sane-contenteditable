@@ -189,7 +189,7 @@ class ContentEditable extends Component {
       if (isFunction(onChange)) {
         const { value } = this.state;
 
-        onChange(value);
+        onChange(ev, value);
       }
     });
   };

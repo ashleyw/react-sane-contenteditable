@@ -61,7 +61,9 @@ describe('Default behaviour', () => {
     const nextInput = 'foo bar';
 
     wrapper.childAt(0).simulate('input', { target: { innerText: nextInput } });
-    expect(mockHandler).toHaveBeenCalledWith(nextInput);
+
+    expect(mockHandler.mock.calls).toHaveLength(1);
+    expect(mockHandler.mock.calls[0][1]).toBe(nextInput);
   });
 });
 
@@ -371,7 +373,8 @@ describe('Calls handlers', () => {
 
     wrapper.childAt(0).simulate('input', { target: { innerText: nextInput } });
 
-    expect(mockHandler).toHaveBeenCalledWith(nextInput);
+    expect(mockHandler.mock.calls).toHaveLength(1);
+    expect(mockHandler.mock.calls[0][1]).toBe(nextInput);
   });
 
   it('props.onKeyDown called', () => {
