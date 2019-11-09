@@ -100,16 +100,18 @@ class ContentEditable extends Component {
   getSafeCaretPosition(position, nextValue) {
     const { caretPosition, value } = this.state;
 
+    const node = this.ref.childNodes[0] || this.ref;
     const val = nextValue || value;
     let pos = position || caretPosition;
 
-    return Math.min(pos, val.length);
+    return Math.min(pos, val.length, node.length);
   }
 
   setCaretPosition() {
     let range = this.getRange();
 
-    range.setStart(this.ref.childNodes[0] || this.ref, this.getSafeCaretPosition());
+    const node = this.ref.childNodes[0] || this.ref;
+    range.setStart(node, this.getSafeCaretPosition());
     range.collapse();
     this.selection.removeAllRanges();
     this.selection.addRange(range);

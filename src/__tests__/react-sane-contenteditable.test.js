@@ -8,6 +8,8 @@ import ContentEditable from '../react-sane-contenteditable';
 
 // jsDOM
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
+const addRange = jest.fn();
+
 const mockedRange = {
   cloneRange: jest.fn(() => mockedRange),
   collapse: jest.fn(),
@@ -20,7 +22,7 @@ const mockedRange = {
 global.document = doc;
 global.window = doc.defaultView;
 global.document.getSelection = jest.fn(() => ({
-  addRange: jest.fn(),
+  addRange: addRange,
   getRangeAt: jest.fn(() => mockedRange),
   rangeCount: 0,
   removeAllRanges: jest.fn(),
@@ -213,6 +215,15 @@ describe('Handles selections', () => {
 
     expect(wrapper.state('caretPosition')).toEqual(startOffset);
     expect(wrapper.text()).toEqual(nextContent);
+  });
+
+  it('sets a new range without error when length of new value exceeds existing ref childNode', () => {
+    const content = 'Foo bar.';
+    const wrapper = mount(<ContentEditable content={content} />);
+    const ref = wrapper.instance().ref;
+    ref.innerText = content;
+    wrapper.setProps({ content: 'Foo <b>bar</b>' });
+    expect(addRange).toHaveBeenCalled();
   });
 });
 

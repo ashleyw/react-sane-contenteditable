@@ -1,25 +1,25 @@
 {
   "dist/index.umd.js": {
-    "bundled": 15914,
-    "minified": 6880,
-    "gzipped": 2594
+    "bundled": 16295,
+    "minified": 7136,
+    "gzipped": 2643
   },
   "dist/index.umd.min.js": {
-    "bundled": 15914,
-    "minified": 6880,
-    "gzipped": 2594
+    "bundled": 16295,
+    "minified": 7136,
+    "gzipped": 2643
   },
   "dist/index.esm.js": {
-    "bundled": 14601,
-    "minified": 7845,
-    "gzipped": 2641,
+    "bundled": 14952,
+    "minified": 7975,
+    "gzipped": 2690,
     "treeshaked": {
       "rollup": {
-        "code": 6566,
+        "code": 6822,
         "import_statements": 63
       },
       "webpack": {
-        "code": 7644
+        "code": 7914
       }
     }
   }
