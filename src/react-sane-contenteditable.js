@@ -53,10 +53,11 @@ class ContentEditable extends Component {
     };
 
     this.ref = null;
-    this.selection = document.getSelection();
   }
 
   componentDidMount() {
+    this.selection = document.getSelection();
+    
     const { focus } = this.props;
 
     if (focus && this.ref) {
