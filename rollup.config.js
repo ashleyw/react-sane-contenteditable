@@ -56,10 +56,7 @@ export default [
       format: 'esm',
       name: common.output.name,
     },
-    external: id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/'),
-    plugins: [
-      babel(common.plugins.babel),
-      sizeSnapshot(),
-    ],
+    external: (id) => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/'),
+    plugins: [babel(common.plugins.babel), sizeSnapshot()],
   },
 ];

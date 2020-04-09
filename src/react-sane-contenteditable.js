@@ -67,23 +67,26 @@ class ContentEditable extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { caretPosition, content, focus } = this.props;
-    const updateCaretPosition = prevProps.caretPosition !== caretPosition
-      || prevProps.focus !== focus;
+    const updateCaretPosition =
+      prevProps.caretPosition !== caretPosition || prevProps.focus !== focus;
     const updateContent = prevProps.content !== content;
 
     if (updateCaretPosition || updateContent) {
-      this.setState({
-        caretPosition: updateCaretPosition
-          ? this.getCaretPositionFromProps() : prevState.caretPosition,
-        value: updateContent
-          ? this.sanitiseValue(content) : prevState.value,
-      }, () => {
-        this.setCaretPosition();
-      });
+      this.setState(
+        {
+          caretPosition: updateCaretPosition
+            ? this.getCaretPositionFromProps()
+            : prevState.caretPosition,
+          value: updateContent ? this.sanitiseValue(content) : prevState.value,
+        },
+        () => {
+          this.setCaretPosition();
+        },
+      );
     }
   }
 
-  getRange () {
+  getRange() {
     return this.selection.rangeCount ? this.selection.getRangeAt(0) : document.createRange();
   }
 
@@ -127,7 +130,7 @@ class ContentEditable extends Component {
     const prefix = prevValue.slice(0, startOffset);
     const suffix = prevValue.slice(endOffset);
 
-    return [prefix, valueToInsert, suffix].join('')
+    return [prefix, valueToInsert, suffix].join('');
   };
 
   sanitiseValue(value, props = this.props) {
@@ -155,12 +158,16 @@ class ContentEditable extends Component {
         .replace(/\r|\n{3,}/g, '\n\n')
         // Remove leading & trailing whitespace
         // FIXME This causes an issue when setting caret position
-        .split('\n').map(line => line.trim()).join('\n');
+        .split('\n')
+        .map((line) => line.trim())
+        .join('\n');
     }
 
-    return nextValue
-      // Ensure maxLength not exceeded
-      .substr(0, maxLength);
+    return (
+      nextValue
+        // Ensure maxLength not exceeded
+        .substr(0, maxLength)
+    );
   }
 
   onBlur = (ev) => {
@@ -180,18 +187,21 @@ class ContentEditable extends Component {
       return;
     }
 
-    this.setState({
-      caretPosition: this.getCaret(),
-      value: this.sanitiseValue(innerText),
-    }, () => {
-      const { onChange } = this.props;
+    this.setState(
+      {
+        caretPosition: this.getCaret(),
+        value: this.sanitiseValue(innerText),
+      },
+      () => {
+        const { onChange } = this.props;
 
-      if (isFunction(onChange)) {
-        const { value } = this.state;
+        if (isFunction(onChange)) {
+          const { value } = this.state;
 
-        onChange(ev, value);
-      }
-    });
+          onChange(ev, value);
+        }
+      },
+    );
   };
 
   onKeyDown = (ev) => {
@@ -237,23 +247,26 @@ class ContentEditable extends Component {
     }
   };
 
-  onPaste = ev => {
+  onPaste = (ev) => {
     ev.preventDefault();
 
     const pastedValue = ev.clipboardData.getData('text');
     const value = this.insertAtCaret(this.ref.innerText, pastedValue);
     const { startOffset } = this.getRange();
 
-    this.setState({
-      caretPosition: this.getSafeCaretPosition(startOffset + pastedValue.length, value),
-      value: this.sanitiseValue(value),
-    }, () => {
-      const { onPaste } = this.props;
+    this.setState(
+      {
+        caretPosition: this.getSafeCaretPosition(startOffset + pastedValue.length, value),
+        value: this.sanitiseValue(value),
+      },
+      () => {
+        const { onPaste } = this.props;
 
-      if (isFunction(onPaste)) {
-        onPaste(value);
-      }
-    });
+        if (isFunction(onPaste)) {
+          onPaste(value);
+        }
+      },
+    );
   };
 
   setRef = (ref) => {

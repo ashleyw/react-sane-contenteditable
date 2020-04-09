@@ -2,7 +2,13 @@
   "name": "react-sane-contenteditable",
   "version": "1.6.1",
   "description": "React component with sane defaults to make any element contentEditable",
-  "keywords": ["content-editable", "contenteditable", "editable", "react", "react-component"],
+  "keywords": [
+    "content-editable",
+    "contenteditable",
+    "editable",
+    "react",
+    "react-component"
+  ],
   "homepage": "https://github.com/ashleyw/react-sane-contenteditable#readme",
   "bugs": {
     "url": "https://github.com/ashleyw/react-sane-contenteditable/issues"
@@ -13,8 +19,16 @@
   },
   "license": "MIT",
   "author": "Ashley Williams <hi@ashleyw.co.uk>",
-  "contributors": ["Nick Aspinall", "Raphael Silva Cavalcanti", "Jess Telford"],
-  "files": ["lib", "LICENSE", "README.md"],
+  "contributors": [
+    "Nick Aspinall",
+    "Raphael Silva Cavalcanti",
+    "Jess Telford"
+  ],
+  "files": [
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
   "main": "lib/cjs/react-sane-contenteditable.js",
   "module": "lib/esm/react-sane-contenteditable.js",
   "directories": {
@@ -30,7 +44,7 @@
     "dev": "yarn run demo -w",
     "dev:test": "jest --watch --verbose false",
     "lint": "yarn run lint:prettier",
-    "lint:prettier": "prettier --write src/**/*",
+    "lint:prettier": "prettier --write .",
     "prepublish": "yarn build",
     "test": "jest"
   },
@@ -62,7 +76,7 @@
     "husky": "1.0.0-rc.13",
     "jest": "^23.4.2",
     "jsdom": "^11.12.0",
-    "prettier": "1.14.2",
+    "prettier": "^2.0.4",
     "react": "^16.4.2",
     "react-dom": "^16.3.2",
     "rimraf": "^2.6.2",

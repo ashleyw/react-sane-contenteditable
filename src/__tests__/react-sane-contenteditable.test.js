@@ -30,10 +30,7 @@ global.document.createRange = jest.fn(() => mockedRange);
 
 // Helpers
 const focusThenBlur = (wrapper, element = 'div') =>
-  wrapper
-    .find(element)
-    .simulate('focus')
-    .simulate('blur');
+  wrapper.find(element).simulate('focus').simulate('blur');
 
 // Styled components
 const Wrapper = styled.div``;
@@ -295,7 +292,7 @@ describe('Sanitisation', () => {
   it('calls sanitise prop when provided', () => {
     const content = 'foo';
     const nextContent = 'foo bar';
-    const sanitise = jest.fn(value => value);
+    const sanitise = jest.fn((value) => value);
     const wrapper = mount(<ContentEditable content={content} />);
 
     wrapper.setProps({ content: nextContent, sanitise });

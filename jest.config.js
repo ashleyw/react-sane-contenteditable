@@ -21,10 +21,10 @@ module.exports = {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: ["src/*"],
+  collectCoverageFrom: ['src/*'],
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -118,13 +118,13 @@ module.exports = {
   // setupFiles: [],
 
   // The path to a module that runs some code to configure or set up the testing framework before each test
-  setupTestFrameworkScriptFile: "<rootDir>/jest.setup.js",
+  setupTestFrameworkScriptFile: '<rootDir>/jest.setup.js',
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jest-environment-jsdom",
+  testEnvironment: 'jest-environment-jsdom',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -153,7 +153,7 @@ module.exports = {
   // testRunner: "jasmine2",
 
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
-  testURL: "http://localhost/",
+  testURL: 'http://localhost/',
 
   // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
   // timers: "real",
