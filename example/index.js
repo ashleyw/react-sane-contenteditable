@@ -42,7 +42,8 @@ class App extends Component {
         <pre
           style={{
             fontSize: 14,
-            fontFamily: '\'Courier New\', Courier, \'Lucida Sans Typewriter\', \'Lucida Typewriter\', monospace',
+            fontFamily:
+              "'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace",
           }}
         >
           {this.state.title}

@@ -13,29 +13,15 @@
   ],
   "env": {
     "esm": {
-      "plugins": [
-        ["@babel/transform-runtime"]
-      ],
-      "ignore": [
-        "**/*.test.js",
-        "**/__tests__/**",
-        "**/__mocks__/**"
-      ]
+      "plugins": [["@babel/transform-runtime"]],
+      "ignore": ["**/*.test.js", "**/__tests__/**", "**/__mocks__/**"]
     },
     "cjs": {
-      "plugins": [
-        "transform-es2015-modules-commonjs"
-      ],
-      "ignore": [
-        "**/*.test.js",
-        "**/__tests__/**",
-        "**/__mocks__/**"
-      ]
+      "plugins": ["transform-es2015-modules-commonjs"],
+      "ignore": ["**/*.test.js", "**/__tests__/**", "**/__mocks__/**"]
     },
     "test": {
-      "plugins": [
-        "transform-es2015-modules-commonjs"
-      ]
+      "plugins": ["transform-es2015-modules-commonjs"]
     }
   },
   "plugins": [
