@@ -53,11 +53,12 @@ class ContentEditable extends Component {
     };
 
     this.ref = null;
-    this.selection = document.getSelection();
   }
 
   componentDidMount() {
     const { focus } = this.props;
+
+    this.selection = document.getSelection();
 
     if (focus && this.ref) {
       this.setCaretPosition();
