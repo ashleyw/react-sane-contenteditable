@@ -292,6 +292,16 @@ describe('Sanitisation', () => {
     expect(wrapper.text()).toEqual('foo bar');
   });
 
+  it('calls sanitise function on mount', () => {
+    const content = 'foo';
+    const sanitise = jest.fn(value => value);
+    const wrapper = mount(<ContentEditable content={content} sanitise={sanitise} />);
+
+    // Will be passed 'null' range when sanitised server-side (ie; before
+    // "mount")
+    expect(sanitise).toHaveBeenCalledWith(content, null);
+  });
+
   it('calls sanitise prop when provided', () => {
     const content = 'foo';
     const nextContent = 'foo bar';
