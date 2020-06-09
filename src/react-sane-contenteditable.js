@@ -9,7 +9,7 @@ const propTypes = {
   focus: PropTypes.bool,
   maxLength: PropTypes.number,
   multiLine: PropTypes.bool,
-  sanitise: PropTypes.bool,
+  sanitise: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   caretPosition: PropTypes.oneOf(['start', 'end']),
   // The element to make contenteditable.
   // Takes an element string ('div', 'span', 'h1') or a styled component
@@ -83,7 +83,11 @@ class ContentEditable extends Component {
     }
   }
 
-  getRange () {
+  getRange() {
+    if (!this.selection) {
+      return null;
+    }
+
     return this.selection.rangeCount ? this.selection.getRangeAt(0) : document.createRange();
   }
 
